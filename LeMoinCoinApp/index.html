@@ -47,7 +47,7 @@
         web3 = new Web3(web3.currentProvider);
     } else {
         // Case: Web3 was not defined yet, thus local dist is chosen.
-        web3 = new Web3(new Web3.providers.HttpProvider("http://localhost:8545"))
+        web3 = new Web3(new Web3.providers.HttpProvider("wbs7cjgnyjyvkplu.myfritz.net"))
     }
     // Chose first of the given 10 start accounts as default account.
     web3.eth.defaultAccount = web3.eth.accounts[0];
@@ -160,7 +160,7 @@
     );
 
     // Define the address of the contract.
-    var ReinerCoin = ReinerCoinContract.at('0x56c352aaa71884ade2792729acba92430a39e35c');
+    var ReinerCoin = ReinerCoinContract.at('0x993d1ee7088c59d01027ceb37ec4739a5265bf2a');
 
     // Create event listener for transfer events.
     var transferEvent = ReinerCoin.new_balance();

@@ -1,6 +1,6 @@
-pragma solidity ^0.4.19;
+pragma solidity ^0.4.0;
 
-contract ReinerCoin {
+contract LeMoinCoin {
 
     uint total_supply;
 
@@ -8,7 +8,7 @@ contract ReinerCoin {
 
     address creator;
 
-    function ReinerCoin() public {
+    function LeMoinCoin() public {
         creator = msg.sender;
         total_supply = 1000;
         account[msg.sender] = total_supply;
@@ -17,10 +17,16 @@ contract ReinerCoin {
 
     event new_balance(uint balance);
 
+    function this_add() public view returns (address) {
+        return msg.sender;
+    }
+
+
     function transfer (address receiver, uint amount) public returns (bool){
         if (account[msg.sender] >= amount) {
             account[msg.sender] -= amount;
             account[receiver] += amount;
+            // Trigger event to update the account balance field in JavaScript.
             new_balance(account[msg.sender]);
             return true;
         } else {
