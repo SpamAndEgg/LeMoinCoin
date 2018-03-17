@@ -1,0 +1,6 @@
+# Exclude all node modules.
+node_modules
+# Exclude all log files.
+*.log
+# Exclude Webstorm settings.
+.idea
