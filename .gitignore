@@ -4,3 +4,5 @@ node_modules
 *.log
 # Exclude Webstorm settings.
 .idea
+# Exclude compiled truffle data
+build
