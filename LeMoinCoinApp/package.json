@@ -1,17 +1,21 @@
 {
-  "name": "LeMoinCoin",
-  "version": "0.1.0",
+  "name": "testserver",
+  "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon server.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "ejs": "^2.5.8",
+    "express": "^4.16.3",
+    "fs": "0.0.1-security",
+    "stylus": "^0.54.5",
     "web3": "github:ethereum/web3.js"
   },
   "devDependencies": {
-    "lite-server": "^2.3.0"
+    "nodemon": "^1.17.3"
   }
 }

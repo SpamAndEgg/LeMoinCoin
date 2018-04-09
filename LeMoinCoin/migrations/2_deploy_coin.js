@@ -1,5 +1,5 @@
-var crazy_coin = artifacts.require("./LeMoinCoin.sol");
+var LeMoinCoin = artifacts.require("./LeMoinCoin.sol");
 
 module.exports = function(deployer) {
-  deployer.deploy(crazy_coin);
+  deployer.deploy(LeMoinCoin);
 };
