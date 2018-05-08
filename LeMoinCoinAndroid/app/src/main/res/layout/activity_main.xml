@@ -8,6 +8,7 @@
     tools:context="lemoin.lemoincoinandroid.MainActivity">
 
 
+
     <TextView
         android:id="@+id/textTop"
         android:layout_width="wrap_content"
@@ -17,8 +18,6 @@
         android:text="TextView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-
-
 
 
     <EditText
@@ -92,6 +91,8 @@
         android:text="LeMoin Coin"
         app:layout_constraintEnd_toEndOf="@+id/imgMoustache"
         app:layout_constraintTop_toTopOf="@+id/imgMoustache" />
+
+
 
 
 </android.support.constraint.ConstraintLayout>

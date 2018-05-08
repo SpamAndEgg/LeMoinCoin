@@ -1,27 +1,60 @@
 package lemoin.lemoincoinandroid
 
+import android.app.Activity
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v4.content.ContextCompat.startActivity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ListView
+import co.zsmb.materialdrawerkt.builders.drawer
+import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
+import co.zsmb.materialdrawerkt.draweritems.badgeable.secondaryItem
+import co.zsmb.materialdrawerkt.draweritems.divider
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
+import com.mikepenz.materialdrawer.Drawer
+import com.mikepenz.materialdrawer.R.attr.divider
 import kotlinx.android.synthetic.main.activity_main.*
+import lemoin.lemoincoinandroid.R.id.editTextBot
 import java.io.IOException
+import kotlin.reflect.KClass
 
 class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        //setSupportActionBar(toolbar)
 
-        editTextBot.hint = "Burger King"
+
+
+        drawer {
+
+            //toolbar = this@MainActivity.toolbar
+            translucentStatusBar = false
+
+            primaryItem("Home") {
+                icon = R.drawable.ic_home
+                selectable = false
+            }
+            // Divider places a line as visual dividing element.
+            divider {  }
+            primaryItem("Addresses") {
+                icon = R.drawable.ic_list
+                onClick (openActivity(AddressPage::class))
+            }
+            divider {  }
+            primaryItem("Logout") {
+                icon = R.drawable.ic_logout
+            }
+
+        }
 
         get_acc_balance()
         btnAddressPage.setOnClickListener{
@@ -32,8 +65,13 @@ class MainActivity : AppCompatActivity() {
 
         }
 
+        editTextBot.hint = "Burger King"
 
+    }
 
+    private fun <T : Activity> openActivity(activity: KClass<T>): (View?) -> Boolean = {
+        startActivity(Intent(this@MainActivity, activity.java))
+        false
     }
 
     // Function to get the current balance of the users account.

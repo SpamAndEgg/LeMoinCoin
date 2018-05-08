@@ -4,16 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorAccent"
     tools:context="lemoin.lemoincoinandroid.AddressPage">
 
 
     <ListView
         android:id="@+id/main_listview"
         android:layout_width="0dp"
-        android:layout_height="444dp"
-        android:layout_marginBottom="16dp"
+        android:layout_height="401dp"
         android:background="@color/colorAccent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/imgMoustache"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
