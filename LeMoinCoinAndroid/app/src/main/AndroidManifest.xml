@@ -19,6 +19,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".AddressPage"></activity>
+        <activity android:name=".SendCoin"></activity>
     </application>
 
 </manifest>

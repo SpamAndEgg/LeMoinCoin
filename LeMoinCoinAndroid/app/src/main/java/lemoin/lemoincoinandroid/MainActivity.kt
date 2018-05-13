@@ -45,6 +45,12 @@ class MainActivity : AppCompatActivity() {
             }
             // Divider places a line as visual dividing element.
             divider {  }
+
+            primaryItem("Send coin") {
+                icon = R.drawable.ic_list
+                onClick (openActivity(SendCoin::class))
+            }
+            divider {  }
             primaryItem("Addresses") {
                 icon = R.drawable.ic_list
                 onClick (openActivity(AddressPage::class))

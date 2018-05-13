@@ -1,98 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:paddingLeft="16dp"
+    android:paddingRight="16dp"
+    android:orientation="vertical"
     android:background="@color/colorAccent"
     tools:context="lemoin.lemoincoinandroid.MainActivity">
 
 
 
-    <TextView
-        android:id="@+id/textTop"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="64dp"
-        android:layout_marginTop="44dp"
-        android:text="TextView"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
     <EditText
-        android:id="@+id/editTextBot"
-        android:layout_width="wrap_content"
+        android:id="@+id/txt_your_add"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="128dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/imgMoustache"
-        app:layout_constraintHorizontal_bias="0.735"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:hint="Your Address"/>
 
-    <Button
-        android:id="@+id/buttonMid"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="260dp"
-        android:text="Button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <Button
-        android:id="@+id/btnMainPage"
-        style="@style/Widget.AppCompat.Button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="28dp"
-        android:background="@color/colorPrimary"
-        android:fontFamily="roboto light"
-        android:text="Main Page"
-        android:textColor="@android:color/background_light"
-        app:layout_constraintEnd_toStartOf="@+id/btnAddressPage"
-        app:layout_constraintTop_toTopOf="@+id/btnAddressPage" />
-
-    <Button
-        android:id="@+id/btnAddressPage"
-        style="@style/Widget.AppCompat.Button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="120dp"
-        android:layout_marginTop="36dp"
-        android:background="@color/colorPrimary"
-        android:fontFamily="roboto light"
-        android:text="Addressbook"
-        android:textColor="@android:color/background_light"
-        app:layout_constraintEnd_toEndOf="@+id/imgMoustache"
-        app:layout_constraintTop_toTopOf="@+id/imgMoustache" />
-
-    <ImageView
-        android:id="@+id/imgMoustache"
-        android:layout_width="110dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="408dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@mipmap/ic_launcher_foreground" />
 
     <TextView
-        android:id="@+id/textMoustache"
+        android:id="@+id/txt_your_balance"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Your Balance:"
+        android:layout_marginBottom="12dp"/>
+
+    <Button
+        android:id="@+id/btn_show_balance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="68dp"
-        android:text="LeMoin Coin"
-        app:layout_constraintEnd_toEndOf="@+id/imgMoustache"
-        app:layout_constraintTop_toTopOf="@+id/imgMoustache" />
+        android:text="Show Balance" />
 
 
 
 
-</android.support.constraint.ConstraintLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1"
+        android:gravity="right|bottom"
+        android:orientation="horizontal" >
+
+
+
+        <Button
+            android:id="@+id/btnMainPage"
+            style="@style/Widget.AppCompat.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:fontFamily="roboto light"
+            android:text="Main Page"
+            android:textColor="@android:color/background_light" />
+
+        <Button
+            android:id="@+id/btnAddressPage"
+            style="@style/Widget.AppCompat.Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@color/colorPrimary"
+            android:fontFamily="roboto light"
+            android:text="Addressbook"
+            android:textColor="@android:color/background_light" />
+
+        <ImageView
+            android:id="@+id/imgMoustache"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@mipmap/ic_launcher_foreground" />
+
+    </LinearLayout>
+
+
+
+
+</LinearLayout>

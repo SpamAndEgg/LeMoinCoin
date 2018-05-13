@@ -26,7 +26,6 @@ class AddressPage : AppCompatActivity() {
         listView.adapter = MyCustomAdapter(this)
 
         btnMainPage2.setOnClickListener{
-            println("Cluckkkk")
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
         }
