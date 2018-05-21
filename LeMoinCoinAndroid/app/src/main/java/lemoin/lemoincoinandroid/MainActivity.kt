@@ -21,7 +21,7 @@ import com.android.volley.toolbox.Volley
 import com.mikepenz.materialdrawer.Drawer
 import com.mikepenz.materialdrawer.R.attr.divider
 import kotlinx.android.synthetic.main.activity_main.*
-import lemoin.lemoincoinandroid.R.id.editTextBot
+import lemoin.lemoincoinandroid.R.id.txt_your_add
 import java.io.IOException
 import kotlin.reflect.KClass
 
@@ -71,7 +71,7 @@ class MainActivity : AppCompatActivity() {
 
         }
 
-        editTextBot.hint = "Burger King"
+        txt_your_add.hint = "Burger King"
 
     }
 
@@ -88,11 +88,11 @@ class MainActivity : AppCompatActivity() {
         //val url = "http://www.google.com"
         val stringRequest = StringRequest(Request.Method.GET, url, Response.Listener<String> {
             response ->
-            editTextBot.hint = response.toString()
+            //editTextBot.hint = response.toString()
             //editTextBot.hint = response.substring(0, 23)
             println("---------------------------------------------------- YES")
         },
-        Response.ErrorListener { editTextBot.hint = "Something went wrong!"} )
+        Response.ErrorListener { txt_your_add.hint = "Something went wrong!"} )
 
         queue.add(stringRequest)
 
