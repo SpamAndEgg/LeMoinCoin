@@ -1,8 +1,14 @@
 const express      = require('express');
-const bodyParser   = require('body-parser');
+var bodyParser   = require('body-parser');
 var path           = require('path');
 
 var app            = express();
+
+// Parsing and encoding for reading HTML post request bodys.
+app.use( bodyParser.json() );       // to support JSON-encoded bodies
+app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+  extended: true
+}));
 
 // View Engine
 // Views are stored in folder 'views'.

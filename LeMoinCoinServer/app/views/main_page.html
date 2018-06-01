@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>LeMoinCoin</title>
+  <meta charset="UTF-8">
+  <title>LeMoinCoin</title>
 
-    <link rel="stylesheet" href="cssFiles/main.css">
-    <script type="text/javascript">
-      console.log("It Worked");
-    </script>
-    <script src="nodeModules/web3/dist/web3.min.js"></script>
+  <link rel="stylesheet" href="cssFiles/main.css">
+  <script type="text/javascript">
+  console.log("It Worked");
+  </script>
+  <script src="nodeModules/web3/dist/web3.min.js"></script>
 </head>
 
 <body>
-<div class="container">
+  <div class="container">
 
     <h1>LeMoinCoin</h1>
 
@@ -39,203 +39,425 @@
 
 
 
-</div>
+  </div>
 
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
 
-<script>
-    if (typeof web3 !== 'undefined') {
-        // Case: Web3 was already defined.
-        web3 = new Web3(web3.currentProvider);
+  <script>
+  if (typeof web3 !== 'undefined') {
+    // Case: Web3 was already defined.
+    web3 = new Web3(web3.currentProvider);
+  } else {
+    // Case: Web3 was not defined yet, thus local dist is chosen.
+    web3 = new Web3(new Web3.providers.HttpProvider("https://ropsten.infura.io/"))
+  }
+  // Chose first of the given 10 start accounts as default account.
+  web3.eth.defaultAccount = web3.eth.accounts[0];
+  // Set the application binary interface (ABI) for this smart contract.
+  var LeMoinCoinContract = web3.eth.contract(
+    [
+
+      {
+        "anonymous": false,
+        "inputs": [
+          {
+            "indexed": true,
+            "name": "tokenOwner",
+            "type": "address"
+          },
+          {
+            "indexed": true,
+            "name": "spender",
+            "type": "address"
+          },
+          {
+            "indexed": false,
+            "name": "tokens",
+            "type": "uint256"
+          }
+        ],
+        "name": "Approval",
+        "type": "event"
+      },
+      {
+        "constant": false,
+        "inputs": [],
+        "name": "acceptOwnership",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      {
+        "constant": false,
+        "inputs": [
+          {
+            "name": "spender",
+            "type": "address"
+          },
+          {
+            "name": "tokens",
+            "type": "uint256"
+          }
+        ],
+        "name": "approve",
+        "outputs": [
+          {
+            "name": "success",
+            "type": "bool"
+          }
+        ],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      {
+        "constant": false,
+        "inputs": [
+          {
+            "name": "spender",
+            "type": "address"
+          },
+          {
+            "name": "tokens",
+            "type": "uint256"
+          },
+          {
+            "name": "data",
+            "type": "bytes"
+          }
+        ],
+        "name": "approveAndCall",
+        "outputs": [
+          {
+            "name": "success",
+            "type": "bool"
+          }
+        ],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      {
+        "constant": false,
+        "inputs": [
+          {
+            "name": "to",
+            "type": "address"
+          },
+          {
+            "name": "tokens",
+            "type": "uint256"
+          }
+        ],
+        "name": "transfer",
+        "outputs": [
+          {
+            "name": "success",
+            "type": "bool"
+          }
+        ],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      {
+        "anonymous": false,
+        "inputs": [
+          {
+            "indexed": true,
+            "name": "from",
+            "type": "address"
+          },
+          {
+            "indexed": true,
+            "name": "to",
+            "type": "address"
+          },
+          {
+            "indexed": false,
+            "name": "tokens",
+            "type": "uint256"
+          }
+        ],
+        "name": "Transfer",
+        "type": "event"
+      },
+      {
+        "anonymous": false,
+        "inputs": [
+          {
+            "indexed": true,
+            "name": "_from",
+            "type": "address"
+          },
+          {
+            "indexed": true,
+            "name": "_to",
+            "type": "address"
+          }
+        ],
+        "name": "OwnershipTransferred",
+        "type": "event"
+      },
+      {
+        "constant": false,
+        "inputs": [
+          {
+            "name": "from",
+            "type": "address"
+          },
+          {
+            "name": "to",
+            "type": "address"
+          },
+          {
+            "name": "tokens",
+            "type": "uint256"
+          }
+        ],
+        "name": "transferFrom",
+        "outputs": [
+          {
+            "name": "success",
+            "type": "bool"
+          }
+        ],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      {
+        "constant": false,
+        "inputs": [
+          {
+            "name": "_newOwner",
+            "type": "address"
+          }
+        ],
+        "name": "transferOwnership",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      {
+        "inputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+      },
+      {
+        "payable": true,
+        "stateMutability": "payable",
+        "type": "fallback"
+      },
+      {
+        "constant": true,
+        "inputs": [],
+        "name": "_totalSupply",
+        "outputs": [
+          {
+            "name": "",
+            "type": "uint256"
+          }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "constant": true,
+        "inputs": [
+          {
+            "name": "tokenOwner",
+            "type": "address"
+          },
+          {
+            "name": "spender",
+            "type": "address"
+          }
+        ],
+        "name": "allowance",
+        "outputs": [
+          {
+            "name": "remaining",
+            "type": "uint256"
+          }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "constant": true,
+        "inputs": [
+          {
+            "name": "tokenOwner",
+            "type": "address"
+          }
+        ],
+        "name": "balanceOf",
+        "outputs": [
+          {
+            "name": "balance",
+            "type": "uint256"
+          }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "constant": true,
+        "inputs": [],
+        "name": "decimals",
+        "outputs": [
+          {
+            "name": "",
+            "type": "uint8"
+          }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "constant": true,
+        "inputs": [],
+        "name": "name",
+        "outputs": [
+          {
+            "name": "",
+            "type": "string"
+          }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "constant": true,
+        "inputs": [],
+        "name": "newOwner",
+        "outputs": [
+          {
+            "name": "",
+            "type": "address"
+          }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "constant": true,
+        "inputs": [],
+        "name": "owner",
+        "outputs": [
+          {
+            "name": "",
+            "type": "address"
+          }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "constant": true,
+        "inputs": [],
+        "name": "symbol",
+        "outputs": [
+          {
+            "name": "",
+            "type": "string"
+          }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "constant": true,
+        "inputs": [],
+        "name": "totalSupply",
+        "outputs": [
+          {
+            "name": "",
+            "type": "uint256"
+          }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+      }
+
+
+    ]
+  );
+
+  // Define the address of the contract.
+  var LeMoinCoin = LeMoinCoinContract.at('0x79b4799f0dc3eeb0de0fb6694e77f1380d35495d');
+
+  // Create event listener for transfer events.
+  var transferEvent = LeMoinCoin.new_balance();
+  transferEvent.watch(function(error, result){
+    if(!error){
+      // Hide the loading animation when finished.
+      $("#loader").hide();
+      $("#myBalance").html('My balance: ' + result.args.balance);
     } else {
-        // Case: Web3 was not defined yet, thus local dist is chosen.
-        web3 = new Web3(new Web3.providers.HttpProvider("b3n4utcebjsmzthf.myfritz.net"))
+      // Hide the loading animation when finished.
+      $("#loader").hide();
+      console.log(error);
     }
-    // Chose first of the given 10 start accounts as default account.
-    web3.eth.defaultAccount = web3.eth.accounts[0];
-    // Set the application binary interface (ABI) for this smart contract.
-    var LeMoinCoinContract = web3.eth.contract(
-        [
-            {
-                "inputs": [],
-                "payable": false,
-                "stateMutability": "nonpayable",
-                "type": "constructor"
-            },
-            {
-                "anonymous": false,
-                "inputs": [
-                    {
-                        "indexed": false,
-                        "name": "balance",
-                        "type": "uint256"
-                    }
-                ],
-                "name": "new_balance",
-                "type": "event"
-            },
-            {
-                "constant": true,
-                "inputs": [],
-                "name": "this_add",
-                "outputs": [
-                    {
-                        "name": "",
-                        "type": "address"
-                    }
-                ],
-                "payable": false,
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "constant": false,
-                "inputs": [
-                    {
-                        "name": "receiver",
-                        "type": "address"
-                    },
-                    {
-                        "name": "amount",
-                        "type": "uint256"
-                    }
-                ],
-                "name": "transfer",
-                "outputs": [
-                    {
-                        "name": "",
-                        "type": "bool"
-                    }
-                ],
-                "payable": false,
-                "stateMutability": "nonpayable",
-                "type": "function"
-            },
-            {
-                "constant": true,
-                "inputs": [],
-                "name": "show_me_my_balance",
-                "outputs": [
-                    {
-                        "name": "",
-                        "type": "uint256"
-                    }
-                ],
-                "payable": false,
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "constant": true,
-                "inputs": [],
-                "name": "test_output",
-                "outputs": [
-                    {
-                        "name": "",
-                        "type": "uint256"
-                    }
-                ],
-                "payable": false,
-                "stateMutability": "pure",
-                "type": "function"
-            },
-            {
-                "constant": true,
-                "inputs": [],
-                "name": "totalSupply",
-                "outputs": [
-                    {
-                        "name": "",
-                        "type": "uint256"
-                    }
-                ],
-                "payable": false,
-                "stateMutability": "view",
-                "type": "function"
-            },
-            {
-                "constant": true,
-                "inputs": [
-                    {
-                        "name": "tokenOwner",
-                        "type": "address"
-                    }
-                ],
-                "name": "balanceOf",
-                "outputs": [
-                    {
-                        "name": "balance",
-                        "type": "uint256"
-                    }
-                ],
-                "payable": false,
-                "stateMutability": "view",
-                "type": "function"
-            }
-        ]
-    );
+  });
 
-    // Define the address of the contract.
-    var LeMoinCoin = LeMoinCoinContract.at('0x58412af31c76c0bc2a446829e58125eb14780dea');
 
-    // Create event listener for transfer events.
-    var transferEvent = LeMoinCoin.new_balance();
-    transferEvent.watch(function(error, result){
-        if(!error){
-            // Hide the loading animation when finished.
-            $("#loader").hide();
-            $("#myBalance").html('My balance: ' + result.args.balance);
-        } else {
-            // Hide the loading animation when finished.
-            $("#loader").hide();
-            console.log(error);
-        }
+  LeMoinCoin.this_add(function(error, result) {
+    if (!error) {
+      $("#thisAdd").html('This address: ' + result.toString());
+    } else {
+      console.log(error);
+    }
+  });
+
+  LeMoinCoin.show_me_my_balance(function(error, result) {
+    if (!error) {
+      $("#myBalance").html('My balance: ' + result.toString());
+    } else {
+      console.log(error);
+    }
+  });
+
+  LeMoinCoin.totalSupply(function(error, result) {
+    if (!error) {
+      $("#totSupply").html('Total supply: ' + result.toString());
+    } else {
+      console.log(error);
+    }
+  });
+
+  $("#balanceOfButton").click(function() {
+    console.log($("#balanceOfAdd").val());
+    LeMoinCoin.balanceOf($("#balanceOfAdd").val(), function(error, result){
+      $("#balanceOfText").html('Balance: ' + result.toString());
+    });
+  });
+
+  $("#transferButton").click(function() {
+    $("#loader").show();
+
+    LeMoinCoin.transfer($("#transferAdd").val(), $("#transferAmount").val(), function (error, result) {
+      if (error) {
+        console.log('ja schon');
+        $("#loader").hide();
+        console.log(error);
+      }
     });
 
-
-    LeMoinCoin.this_add(function(error, result) {
-        if (!error) {
-            $("#thisAdd").html('This address: ' + result.toString());
-        } else {
-            console.log(error);
-        }
-    });
-
-    LeMoinCoin.show_me_my_balance(function(error, result) {
-        if (!error) {
-            $("#myBalance").html('My balance: ' + result.toString());
-        } else {
-            console.log(error);
-        }
-    });
-
-    LeMoinCoin.totalSupply(function(error, result) {
-        if (!error) {
-            $("#totSupply").html('Total supply: ' + result.toString());
-        } else {
-            console.log(error);
-        }
-    });
-
-    $("#balanceOfButton").click(function() {
-        console.log($("#balanceOfAdd").val());
-        LeMoinCoin.balanceOf($("#balanceOfAdd").val(), function(error, result){
-            $("#balanceOfText").html('Balance: ' + result.toString());
-        });
-    });
-
-    $("#transferButton").click(function() {
-        $("#loader").show();
-
-        LeMoinCoin.transfer($("#transferAdd").val(), $("#transferAmount").val(), function (error, result) {
-            if (error) {
-                console.log('ja schon');
-                $("#loader").hide();
-                console.log(error);
-            }
-        });
-
-    });
+  });
 
 
 </script>
