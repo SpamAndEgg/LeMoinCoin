@@ -4,11 +4,13 @@ import android.app.Activity
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.os.Handler
 import android.support.v4.content.ContextCompat.startActivity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ListView
+import android.widget.Toast
 import co.zsmb.materialdrawerkt.builders.drawer
 import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
 import co.zsmb.materialdrawerkt.draweritems.badgeable.secondaryItem
@@ -22,16 +24,35 @@ import com.mikepenz.materialdrawer.Drawer
 import com.mikepenz.materialdrawer.R.attr.divider
 import kotlinx.android.synthetic.main.activity_main.*
 import lemoin.lemoincoinandroid.R.id.txt_your_add
+import me.dm7.barcodescanner.zbar.ZBarScannerView
 import java.io.IOException
 import kotlin.reflect.KClass
 
 class MainActivity : AppCompatActivity() {
+
+    private var sDb: StoredDataBase? = null
+    private lateinit var sDbWorkerThread: DbWorkerThread
+    private val sUiHandler = Handler()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         //setSupportActionBar(toolbar)
 
+        sDbWorkerThread = DbWorkerThread("dbWorkerThread")
+        sDbWorkerThread.start()
+
+        sDb = StoredDataBase.getInstance(this)
+
+        var newData = StoredData()
+        newData.walletName = "Das"
+        newData.privateKey = "ist"
+        newData.publicKey = "ein Test!"
+
+        insertStoredDataInDb(newData)
+
+        fetchStoredDataFromDb()
 
 
         drawer {
@@ -65,6 +86,14 @@ class MainActivity : AppCompatActivity() {
         get_acc_balance()
         btnAddressPage.setOnClickListener{
             val intent = Intent(this, AddressPage::class.java)
+            startActivity(intent)
+            //(R.layout.activity_address_page)
+
+
+        }
+
+        btnAddPage.setOnClickListener{
+            val intent = Intent(this, AddActivity::class.java)
             startActivity(intent)
             //(R.layout.activity_address_page)
 
@@ -115,6 +144,30 @@ class MainActivity : AppCompatActivity() {
         })
         */
 
+    }
+
+    private fun bindDataWithUi(storedData: StoredData?) {
+        txt_your_balance.hint = storedData?.publicKey.toString()
+    }
+
+    private fun fetchStoredDataFromDb() {
+        val task = Runnable {
+            val weatherData =
+                    sDb?.storedDataDao()?.getAll()
+            sUiHandler.post({
+                if (weatherData == null || weatherData?.size == 0) {
+                    txt_your_balance.hint = "No data in cache..!!"
+                } else {
+                    bindDataWithUi(storedData = weatherData?.get(0))
+                }
+            })
+        }
+        sDbWorkerThread.postTask(task)
+    }
+
+    private fun insertStoredDataInDb(storedData: StoredData) {
+        val task = Runnable { sDb?.storedDataDao()?.insert(storedData) }
+        sDbWorkerThread.postTask(task)
     }
 
 }
