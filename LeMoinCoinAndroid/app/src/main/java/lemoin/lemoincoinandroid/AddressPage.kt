@@ -1,5 +1,6 @@
 package lemoin.lemoincoinandroid
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
@@ -10,13 +11,58 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ListView
 import android.widget.TextView
+import co.zsmb.materialdrawerkt.builders.drawer
+import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
+import co.zsmb.materialdrawerkt.draweritems.divider
+import com.mikepenz.materialdrawer.Drawer
 import kotlinx.android.synthetic.main.activity_address_page.*
+import kotlinx.android.synthetic.main.toolbar.*
+import kotlin.reflect.KClass
 
 class AddressPage : AppCompatActivity() {
+
+    private lateinit var result: Drawer
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_address_page)
+        setSupportActionBar(toolbar_page)
+
+        result = drawer {
+
+            toolbar = this@AddressPage.toolbar_page
+            translucentStatusBar = true
+            hasStableIds = true
+            savedInstance = savedInstanceState
+            showOnFirstLaunch = true
+
+            primaryItem("Home") {
+                icon = R.drawable.ic_home
+                onClick (openActivity(MainActivity::class))
+
+            }
+            // Divider places a line as visual dividing element.
+            divider {  }
+
+            primaryItem("Send coin") {
+                icon = R.drawable.ic_list
+                onClick (openActivity(SendCoin::class))
+            }
+            divider {  }
+            primaryItem("Addresses") {
+                icon = R.drawable.ic_list
+
+                selectable = false
+            }
+            divider {  }
+            primaryItem("Logout") {
+                icon = R.drawable.ic_logout
+            }
+
+        }
+
+
+
 
         val listView = findViewById<ListView>(R.id.main_listview)
         val redColor = Color.parseColor("#FF0000")
@@ -25,13 +71,14 @@ class AddressPage : AppCompatActivity() {
         // "this" is the current activity.
         listView.adapter = MyCustomAdapter(this)
 
-        btnMainPage2.setOnClickListener{
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-        }
 
 
 
+    }
+
+    private fun <T : Activity> openActivity(activity: KClass<T>): (View?) -> Boolean = {
+        startActivity(Intent(this@AddressPage, activity.java))
+        false
     }
 
     private class MyCustomAdapter(context: Context): BaseAdapter(){

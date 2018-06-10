@@ -3,6 +3,7 @@ const LeMoinCoinContract = require('../../LeMoinCoinContract');
 const sign = require('ethjs-signer').sign;
 const BN = require('bignumber.js');
 var Tx = require('ethereumjs-tx');
+var eth_add_from_pk = require('../../eth_add_from_pk');
 
 // Load the LeMoinCoin Contract data.
 var LeMoinCoin = LeMoinCoinContract.LeMoinCoin;
@@ -17,21 +18,35 @@ module.exports = function(app, db) {
     //res.send('{"account":{"balance":12,"id":1234,"name":"Marlon"}}');
   })
 
+  // Get the token balance of a given account.
   app.post('/get_balance', (req, res) => {
+    // The only input needed is the public key of the account.
     var pub_key = req.body.pub_key;
+    // Get the balance.
     var balance = LeMoinCoin.balanceOf(pub_key);
-    res.send(balance);
+    console.log("Balance was fetched of acc " + pub_key + ", it is " + balance);
+    // Create a JSON object containing the balance as server response.
+    var balance_json = {
+      "balance": balance
+    };
+    // Respond with JSON object.
+    res.send(balance_json);
   })
+
 
   // TRANSFER COINS
   app.post('/transfer', (req, res) => {
 
     const pri_key = req.body.pri_key;
-    const pub_key = req.body.pub_key;
     const send_to_add = req.body.send_to;
     const amount = req.body.amount;
 
-    console.log(web3.eth.getTransactionCount(pub_key) + 1);
+    // Get the public key from the private key.
+    console.log(pri_key);
+    // Get the ethereum address (derived from the public key).
+    var pub_add = eth_add_from_pk(pri_key);
+
+    console.log(web3.eth.getTransactionCount(pub_add) + 1);
 
     // Get the nonce of the sender.
 
@@ -40,17 +55,16 @@ module.exports = function(app, db) {
     const gasLimitHex = web3.toHex(3000000);
 
     var raw_transaction = {
-      from: pub_key,
+      //from: pub_key,
       to: LeMoinCoin.address,
-      value: 5000,
-      gas: "0x7458",
+      value: 0,
+      gas: "0x745800",
       gasPrice: "0x04e3b29200",
-      nonce: web3.eth.getTransactionCount(pub_key),
-      data: LeMoinCoin.transfer.getData(send_to_add, 255, {from: pub_key}),
+      nonce: web3.eth.getTransactionCount(pub_add),
+      data: LeMoinCoin.transfer.getData(send_to_add, amount, {from: pub_add}),
     };
 
     var transaction = new Tx(raw_transaction);
-
 
     console.log(transaction);
     var pri_key_buffer = new Buffer(pri_key, 'hex');
@@ -59,12 +73,15 @@ module.exports = function(app, db) {
     var serializedTx = transaction.serialize();
 
     web3.eth.sendRawTransaction('0x' + serializedTx.toString('hex'), function(err, hash) {
-        if (!err)
-            console.log(hash);
-        else
-            console.log(err);
+        if (!err) {
+            console.log("Transaction will be send, the hash of the transaction is: $hash");}
+        else {
+            console.log(err);}
     });
-
-    res.send("Transaction complete")
+    var transfer_status_json = {
+      "status": "Transaction complete"
+    };
+    res.send(transfer_status_json);
   })
+
 }
