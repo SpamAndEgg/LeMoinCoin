@@ -4,7 +4,9 @@ import android.app.Activity
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v4.content.ContextCompat.startActivity
 import android.view.View
+import android.widget.Switch
 import co.zsmb.materialdrawerkt.builders.drawer
 import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
 import co.zsmb.materialdrawerkt.draweritems.divider
@@ -28,6 +30,11 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar_page)
 
+        // Get info if user is logged in.
+        val isLoggedIn = intent.getBooleanExtra("isLoggedIn", false)
+        // Set the switch state according to weather user is logged in or not.
+        switch_login.isChecked = isLoggedIn
+
         // Define the toolbar.
         result = drawer {
 
@@ -46,16 +53,20 @@ class MainActivity : AppCompatActivity() {
 
             primaryItem("Send coin") {
                 icon = R.drawable.ic_list
-                onClick (openActivity(SendCoin::class))
+                onClick(openActivityLoggedIn(SendCoin::class))
             }
             divider {  }
             primaryItem("Addresses") {
                 icon = R.drawable.ic_list
-                onClick (openActivity(AddressPage::class))
+                onClick (openActivityLoggedIn(AddressPage::class))
+
+                selectable = false
+
             }
             divider {  }
             primaryItem("Logout") {
                 icon = R.drawable.ic_logout
+                onClick(openActivityLogOut(MainActivity::class))
             }
 
         }
@@ -67,11 +78,36 @@ class MainActivity : AppCompatActivity() {
             getAccBalance()
         }
 
+        txt_login_status.text = "switch is " + switch_login.isChecked
+
+        switch_login.setOnClickListener(View.OnClickListener {
+            txt_login_status.text = "Login is " + switch_login.isChecked
+        })
+
     }
 
     // Function to open other screens when chosen in toolbar.
     private fun <T : Activity> openActivity(activity: KClass<T>): (View?) -> Boolean = {
-        startActivity(Intent(this@MainActivity, activity.java))
+        val intent = Intent(this@MainActivity, activity.java)
+        intent.putExtra("isLoggedIn", switch_login.isChecked)
+        startActivity(intent)
+        false
+    }
+
+    // Function to open other screens only when logged in.
+    private fun <T : Activity> openActivityLoggedIn(activity: KClass<T>): (View?) -> Boolean = {
+       if(switch_login.isChecked) {
+           val intent = Intent(this@MainActivity, activity.java)
+           intent.putExtra("isLoggedIn", switch_login.isChecked)
+           startActivity(intent)
+       }
+        false
+    }
+
+    private fun <T : Activity> openActivityLogOut(activity: KClass<T>): (View?) -> Boolean = {
+        val intent = Intent(this@MainActivity, activity.java)
+        intent.putExtra("isLoggedIn", false)
+        startActivity(intent)
         false
     }
 

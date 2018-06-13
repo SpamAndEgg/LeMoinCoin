@@ -18,10 +18,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
-        <activity android:name=".AddressPage"></activity>
-        <activity android:name=".SendCoin"></activity>
-</application>
+        <activity android:name=".AddressPage" />
+        <activity android:name=".SendCoin" />
+        <activity android:name=".GetBalance"></activity>
+    </application>
 
 </manifest>

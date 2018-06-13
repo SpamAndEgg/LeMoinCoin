@@ -16,6 +16,7 @@ import com.mikepenz.materialdrawer.Drawer
 import kotlinx.android.synthetic.main.send_coin.*
 import kotlinx.android.synthetic.main.toolbar.*
 import lemoin.lemoincoinandroid.R.id.*
+import lemoin.lemoincoinandroid.R.layout.toolbar
 import org.json.JSONObject
 import kotlin.reflect.KClass
 
@@ -28,6 +29,8 @@ class SendCoin : AppCompatActivity() {
         setContentView(R.layout.send_coin)
         setSupportActionBar(toolbar_page)
 
+        var isLoggedIn = intent.getBooleanExtra("isLoggedIn", false)
+
         // Define the toolbar.
         result = drawer {
 
@@ -39,7 +42,7 @@ class SendCoin : AppCompatActivity() {
 
             primaryItem("Home") {
                 icon = R.drawable.ic_home
-                onClick (openActivity(MainActivity::class))
+                onClick (openActivity(MainActivity::class, isLoggedIn))
 
             }
             // Divider places a line as visual dividing element.
@@ -52,11 +55,12 @@ class SendCoin : AppCompatActivity() {
             divider {  }
             primaryItem("Addresses") {
                 icon = R.drawable.ic_list
-                onClick (openActivity(AddressPage::class))
+                onClick (openActivityLoggedIn(AddressPage::class, isLoggedIn))
             }
             divider {  }
             primaryItem("Logout") {
                 icon = R.drawable.ic_logout
+                onClick(openActivityLogOut(MainActivity::class))
             }
 
         }
@@ -66,9 +70,30 @@ class SendCoin : AppCompatActivity() {
             transferCoin()
         }
 
+
     }
-    private fun <T : Activity> openActivity(activity: KClass<T>): (View?) -> Boolean = {
-        startActivity(Intent(this@SendCoin, activity.java))
+    // Function to open other screens when chosen in toolbar.
+    private fun <T : Activity> openActivity(activity: KClass<T>, isLoggedIn: Boolean): (View?) -> Boolean = {
+        val intent = Intent(this@SendCoin, activity.java)
+        intent.putExtra("isLoggedIn", isLoggedIn)
+        startActivity(intent)
+        false
+    }
+
+    // Function to open other screens only when logged in.
+    private fun <T : Activity> openActivityLoggedIn(activity: KClass<T>, isLoggedIn: Boolean): (View?) -> Boolean = {
+        if(isLoggedIn) {
+            val intent = Intent(this@SendCoin, activity.java)
+            intent.putExtra("isLoggedIn", isLoggedIn)
+            startActivity(intent)
+        }
+        false
+    }
+
+    private fun <T : Activity> openActivityLogOut(activity: KClass<T>): (View?) -> Boolean = {
+        val intent = Intent(this@SendCoin, activity.java)
+        intent.putExtra("isLoggedIn", false)
+        startActivity(intent)
         false
     }
 
