@@ -6,28 +6,32 @@ import android.support.v7.app.AppCompatActivity
 
 import kotlinx.android.synthetic.main.activity_add.*
 import kotlinx.android.synthetic.main.content_add.*
+import lemoin.lemoincoinandroid.R.id.txt_key
 import me.dm7.barcodescanner.zbar.Result
 import me.dm7.barcodescanner.zbar.ZBarScannerView
 
 class AddActivity : AppCompatActivity() ,ZBarScannerView.ResultHandler {
 
-    private var sDb: StoredDataBase? = null
-    private lateinit var sDbWorkerThread: DbWorkerThread
+    //private var sDb: StoredDataBase? = null
+    //private lateinit var sDbWorkerThread: DbWorkerThread
 
     private lateinit var mScannerView: ZBarScannerView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_add)
-        setSupportActionBar(toolbar)
-
+        //setContentView(R.layout.activity_add)
+        mScannerView = ZBarScannerView(this)
+        //mScannerView.stopCameraPreview()
+        setContentView(mScannerView)
+        //setSupportActionBar(toolbar)
+        /*
         sDbWorkerThread = DbWorkerThread("dbWorkerThread")
         sDbWorkerThread.start()
 
         sDb = StoredDataBase.getInstance(this)
 
         button_add.setOnClickListener({insertStoredDataInDb()})
-        val intent = Intent(this, qr::class.java)
+        val intent = Intent(this, QrCodeScanner::class.java)
         startActivity(intent)
 
         mScannerView = ZBarScannerView(this)
@@ -58,7 +62,7 @@ class AddActivity : AppCompatActivity() ,ZBarScannerView.ResultHandler {
         newData.walletName = txt_name.text.toString();
 
         val task = Runnable { sDb?.storedDataDao()?.insert(newData) }
-        sDbWorkerThread.postTask(task)
+        sDbWorkerThread.postTask(task) */
 
     }
 
@@ -90,8 +94,8 @@ class AddActivity : AppCompatActivity() ,ZBarScannerView.ResultHandler {
         //preview in order scan more codes
         //mScannerView.resumeCameraPreview(this)
 
-        this.txt_key
-        txt_key.hint = result?.contents
+        //this.txt_key
+        //txt_key.hint = result?.contents
     }
 
 }

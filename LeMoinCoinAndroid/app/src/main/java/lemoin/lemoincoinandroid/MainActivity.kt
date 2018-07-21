@@ -5,12 +5,7 @@ import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
-import android.support.v4.content.ContextCompat.startActivity
 import android.view.View
-import android.view.ViewGroup
-import android.widget.BaseAdapter
-import android.widget.ListView
-import android.widget.Toast
 import co.zsmb.materialdrawerkt.builders.drawer
 import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
 import co.zsmb.materialdrawerkt.draweritems.divider
@@ -20,9 +15,9 @@ import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.mikepenz.materialdrawer.Drawer
 import kotlinx.android.synthetic.main.activity_main.*
-import lemoin.lemoincoinandroid.R.id.txt_your_add
-import me.dm7.barcodescanner.zbar.ZBarScannerView
-import java.io.IOException
+import kotlinx.android.synthetic.main.toolbar.*
+import lemoin.lemoincoinandroid.R.id.*
+import org.json.JSONObject
 import kotlin.reflect.KClass
 
 class MainActivity : AppCompatActivity() {
@@ -30,14 +25,20 @@ class MainActivity : AppCompatActivity() {
     private var sDb: StoredDataBase? = null
     private lateinit var sDbWorkerThread: DbWorkerThread
     private val sUiHandler = Handler()
+    private lateinit var result: Drawer
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        //setSupportActionBar(toolbar)
+        setSupportActionBar(toolbar_page)
+
+        /*
+        This following database related code leads to a crash in running the app.
+        PLEASE CHECK ME !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
         sDbWorkerThread = DbWorkerThread("dbWorkerThread")
+
         sDbWorkerThread.start()
 
         sDb = StoredDataBase.getInstance(this)
@@ -47,9 +48,16 @@ class MainActivity : AppCompatActivity() {
         newData.privateKey = "ist"
         newData.publicKey = "ein Test!"
 
+
         insertStoredDataInDb(newData)
 
         fetchStoredDataFromDb()
+        */
+
+        // Get info if user is logged in.
+        val isLoggedIn = intent.getBooleanExtra("isLoggedIn", false)
+        // Set the switch state according to weather user is logged in or not.
+        switch_login.isChecked = isLoggedIn
 
         // Define the toolbar.
         result = drawer {
@@ -67,18 +75,32 @@ class MainActivity : AppCompatActivity() {
             // Divider places a line as visual dividing element.
             divider {  }
 
+            primaryItem("QR Code") {
+                icon = R.drawable.ic_list
+                onClick (openActivity(QrCodeScanner::class))
+
+                selectable = false
+
+            }
+
+            divider{}
+
             primaryItem("Send coin") {
                 icon = R.drawable.ic_list
-                onClick (openActivity(SendCoin::class))
+                onClick(openActivityLoggedIn(SendCoin::class))
             }
             divider {  }
             primaryItem("Addresses") {
                 icon = R.drawable.ic_list
-                onClick (openActivity(AddressPage::class))
+                onClick (openActivityLoggedIn(AddressPage::class))
+
+                selectable = false
+
             }
             divider {  }
             primaryItem("Logout") {
                 icon = R.drawable.ic_logout
+                onClick(openActivityLogOut(MainActivity::class))
             }
 
         }
@@ -90,21 +112,36 @@ class MainActivity : AppCompatActivity() {
             getAccBalance()
         }
 
-        btnAddPage.setOnClickListener{
-            val intent = Intent(this, AddActivity::class.java)
-            startActivity(intent)
-            //(R.layout.activity_address_page)
+        txt_login_status.text = "switch is " + switch_login.isChecked
 
-
-        }
-
-        txt_your_add.hint = "Burger King"
+        switch_login.setOnClickListener(View.OnClickListener {
+            txt_login_status.text = "Login is " + switch_login.isChecked
+        })
 
     }
 
     // Function to open other screens when chosen in toolbar.
     private fun <T : Activity> openActivity(activity: KClass<T>): (View?) -> Boolean = {
-        startActivity(Intent(this@MainActivity, activity.java))
+        val intent = Intent(this@MainActivity, activity.java)
+        intent.putExtra("isLoggedIn", switch_login.isChecked)
+        startActivity(intent)
+        false
+    }
+
+    // Function to open other screens only when logged in.
+    private fun <T : Activity> openActivityLoggedIn(activity: KClass<T>): (View?) -> Boolean = {
+       if(switch_login.isChecked) {
+           val intent = Intent(this@MainActivity, activity.java)
+           intent.putExtra("isLoggedIn", switch_login.isChecked)
+           startActivity(intent)
+       }
+        false
+    }
+
+    private fun <T : Activity> openActivityLogOut(activity: KClass<T>): (View?) -> Boolean = {
+        val intent = Intent(this@MainActivity, activity.java)
+        intent.putExtra("isLoggedIn", false)
+        startActivity(intent)
         false
     }
 

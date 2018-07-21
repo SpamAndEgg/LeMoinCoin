@@ -21,13 +21,18 @@
         </activity>
         <activity android:name=".AddressPage" />
         <activity android:name=".SendCoin" />
-        <activity android:name=".AddActivity"/>
-
-        <activity android:name=".QrCodeScanner" />
-        <!-- Implemented for the qr scanner via google vision. -->
-        <meta-data android:name="com.google.android.gms.vision.DEPENDENCIES"
-            android:value="barcode"></meta-data>
+<<<<<<< HEAD
+        <activity
+            android:name=".AddActivity"
+            android:label="@string/title_activity_add"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".qr"
+            android:label="@string/title_activity_qr"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+=======
+        <activity android:name=".GetBalance"></activity>
+>>>>>>> toolbar
     </application>
-
 
 </manifest>

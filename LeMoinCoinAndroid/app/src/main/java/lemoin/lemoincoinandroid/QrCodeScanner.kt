@@ -1,12 +1,13 @@
 package lemoin.lemoincoinandroid
 
+import android.content.pm.PackageManager
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import me.dm7.barcodescanner.zbar.Result
 import me.dm7.barcodescanner.zbar.ZBarScannerView
 
-class qr : AppCompatActivity(), ZBarScannerView.ResultHandler {
+class QrCodeScanner : AppCompatActivity(), ZBarScannerView.ResultHandler {
     /*
     * Scanner View that will create the layout for scanning a barcode.
     * If you want a custom layout above the scanner layout, then implement
@@ -29,6 +30,7 @@ class qr : AppCompatActivity(), ZBarScannerView.ResultHandler {
         super.onResume()
         mScannerView.setResultHandler(this)
         mScannerView.startCamera()
+
     }
 
     override fun onPause() {

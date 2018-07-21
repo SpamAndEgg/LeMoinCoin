@@ -9,7 +9,7 @@ android {
     defaultConfig {
         applicationId "lemoin.lemoincoinandroid"
         minSdkVersion 19
-        targetSdkVersion 22
+        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -47,9 +47,12 @@ dependencies {
     implementation "android.arch.persistence.room:runtime:1.0.0"
     kapt "android.arch.persistence.room:compiler:1.0.0"
 
+<<<<<<< HEAD
     annotationProcessor "android.arch.persistence.room:compiler:1.0.0"
     testImplementation "android.arch.persistence.room:testing:1.0.0"
     implementation "android.arch.persistence.room:rxjava2:1.0.0"
     implementation 'me.dm7.barcodescanner:zbar:1.9.8'
 
+=======
+>>>>>>> toolbar
 }
