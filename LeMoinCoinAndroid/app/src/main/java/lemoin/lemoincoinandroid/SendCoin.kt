@@ -23,6 +23,9 @@ import kotlin.reflect.KClass
 class SendCoin : AppCompatActivity() {
 
     private lateinit var result: Drawer
+    // Define request codes for private and public key.
+    private var CODE_PRI_KEY = 1
+    private var CODE_PUB_KEY = 2
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,21 +36,18 @@ class SendCoin : AppCompatActivity() {
 
         // Define the toolbar.
         result = drawer {
-
             toolbar = this@SendCoin.toolbar_page
             translucentStatusBar = true
             hasStableIds = true
             savedInstance = savedInstanceState
             showOnFirstLaunch = true
-
+            // Toolbar items.
             primaryItem("Home") {
                 icon = R.drawable.ic_home
                 onClick (openActivity(MainActivity::class, isLoggedIn))
-
             }
             // Divider places a line as visual dividing element.
             divider {  }
-
             primaryItem("Send coin") {
                 icon = R.drawable.ic_list
                 selectable = false
@@ -62,7 +62,6 @@ class SendCoin : AppCompatActivity() {
                 icon = R.drawable.ic_logout
                 onClick(openActivityLogOut(MainActivity::class))
             }
-
         }
 
         // Define action for "Send Coin" button.
@@ -70,14 +69,48 @@ class SendCoin : AppCompatActivity() {
             transferCoin()
         }
 
+        // If one of the QR buttons is clicked, use them to set the public or private key.
+        btn_qr_prikey_sc.setOnClickListener{
+            val intent = Intent(this@SendCoin, QrCodeScanner::class.java)
+            // Start the QR code scanner to get a key. The request code defines weather the qr scanner
+            // scans the private key or the public key of the receiver.
+            startActivityForResult(intent, CODE_PRI_KEY)
+        }
+
+        btn_qr_pubkey_sc.setOnClickListener{
+            val intent = Intent(this@SendCoin, QrCodeScanner::class.java)
+            // Start the QR code scanner to get a key. The request code defines weather the qr scanner
+            // scans the private key or the public key of the receiver.
+            startActivityForResult(intent, CODE_PUB_KEY)
+        }
+
 
     }
+
+    // Overriding the "onActivityResult" allows to catch results that come back when the QR code
+    // scanner is called.
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == CODE_PRI_KEY) {
+                txt_privat_key.setText(data?.getStringExtra("Key"))
+            } else if (requestCode == CODE_PUB_KEY) {
+                send_coin_add.setText(data?.getStringExtra("Key"))
+            }
+        }
+    }
+
     // Function to open other screens when chosen in toolbar.
     private fun <T : Activity> openActivity(activity: KClass<T>, isLoggedIn: Boolean): (View?) -> Boolean = {
         val intent = Intent(this@SendCoin, activity.java)
         intent.putExtra("isLoggedIn", isLoggedIn)
         startActivity(intent)
         false
+    }
+
+    private fun return_string(): String {
+        val rtn_str = "LALALALA123"
+        return rtn_str
     }
 
     // Function to open other screens only when logged in.
@@ -94,6 +127,18 @@ class SendCoin : AppCompatActivity() {
         val intent = Intent(this@SendCoin, activity.java)
         intent.putExtra("isLoggedIn", false)
         startActivity(intent)
+        false
+    }
+
+
+    // Function to open other screens when chosen in toolbar.
+    private fun  <T : Activity> openActivityQr(activity: KClass<T>, requestCode: Int): (View?) -> Boolean = {
+        val intent = Intent(this@SendCoin, activity.java)
+        // Start the QR code scanner to get a key. The request code defines weather the qr scanner
+        // scans the private key or the public key of the receiver.
+        startActivityForResult(intent, requestCode)
+
+
         false
     }
 

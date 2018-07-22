@@ -24,6 +24,13 @@
             android:hint="your private key"
             android:text="c98dd5164ee02a50b5ddb016cc1ca32fe2b5078b58329f2100711bd5aa039f4e"/>
 
+        <Button
+            android:id="@+id/btn_qr_prikey_sc"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="QR" />
+
 
         <EditText
             android:id="@+id/send_coin_add"
@@ -31,6 +38,14 @@
             android:layout_height="wrap_content"
             android:hint="send to (public key)"
             android:text="0xECC78C99B9c0e1094dD01c03DEd83B826Aa70E22"/>
+
+        <Button
+            android:id="@+id/btn_qr_pubkey_sc"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="right"
+            android:text="QR" />
+
         <EditText
             android:id="@+id/send_coin_amount"
             android:layout_width="match_parent"

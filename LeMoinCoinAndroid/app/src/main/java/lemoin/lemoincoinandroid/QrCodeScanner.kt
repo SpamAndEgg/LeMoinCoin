@@ -1,5 +1,7 @@
 package lemoin.lemoincoinandroid
 
+import android.app.Activity
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
@@ -38,6 +40,16 @@ class QrCodeScanner : AppCompatActivity(), ZBarScannerView.ResultHandler {
         mScannerView.stopCamera()
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        mScannerView.stopCamera()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mScannerView.stopCamera()
+    }
+
     /*
     * Barcode scanning result is displayed here.
     * (For demo purposes only toast is shown here)
@@ -47,8 +59,14 @@ class QrCodeScanner : AppCompatActivity(), ZBarScannerView.ResultHandler {
     override fun handleResult(result: Result?) {
         Toast.makeText(this, result?.contents, Toast.LENGTH_SHORT).show()
 
+        // Send back the scanned key to the activity that was calling the QR code scanner.
+        val resultIntent = Intent()
+        resultIntent.putExtra("Key", result?.contents)
+        setResult(Activity.RESULT_OK, resultIntent)
+        // Destroy this activity.
+        finish()
         //Camera will stop after scanning result, so we need to resume the
         //preview in order scan more codes
-        mScannerView.resumeCameraPreview(this)
+        //mScannerView.resumeCameraPreview(this)
     }
 }

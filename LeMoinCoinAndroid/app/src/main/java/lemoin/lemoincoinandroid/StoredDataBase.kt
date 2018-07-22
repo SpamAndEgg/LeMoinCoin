@@ -14,8 +14,8 @@ abstract class StoredDataBase : RoomDatabase() {
         fun getInstance(context: Context): StoredDataBase? {
             if (INSTANCE == null) {
                 synchronized(StoredDataBase::class) {
-                    INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                            StoredDataBase::class.java, "stored.db")
+                    INSTANCE = Room.inMemoryDatabaseBuilder(context.getApplicationContext(),
+                            StoredDataBase::class.java)
                             .build()
                 }
             }

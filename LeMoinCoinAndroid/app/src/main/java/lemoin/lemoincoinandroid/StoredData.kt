@@ -9,5 +9,5 @@ data class StoredData(@PrimaryKey(autoGenerate = true) var id: Long?,
                        @ColumnInfo(name = "publicKey") var publicKey: String
 
 ){
-    constructor():this(null,"asd","asd","asd")
+    constructor():this(null,"default","default","default")
 }

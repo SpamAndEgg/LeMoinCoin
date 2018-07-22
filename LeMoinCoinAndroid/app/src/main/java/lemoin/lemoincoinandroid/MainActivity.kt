@@ -5,6 +5,8 @@ import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.support.v4.content.ContextCompat.startActivity
+import android.text.TextUtils.isEmpty
 import android.view.View
 import co.zsmb.materialdrawerkt.builders.drawer
 import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
@@ -33,12 +35,9 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar_page)
 
-        /*
-        This following database related code leads to a crash in running the app.
-        PLEASE CHECK ME !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
+        // Database setup according to
+        // https://medium.com/mindorks/android-architecture-components-room-and-kotlin-f7b725c8d1d
         sDbWorkerThread = DbWorkerThread("dbWorkerThread")
-
         sDbWorkerThread.start()
 
         sDb = StoredDataBase.getInstance(this)
@@ -52,7 +51,6 @@ class MainActivity : AppCompatActivity() {
         insertStoredDataInDb(newData)
 
         fetchStoredDataFromDb()
-        */
 
         // Get info if user is logged in.
         val isLoggedIn = intent.getBooleanExtra("isLoggedIn", false)
@@ -61,30 +59,18 @@ class MainActivity : AppCompatActivity() {
 
         // Define the toolbar.
         result = drawer {
-
             toolbar = this@MainActivity.toolbar_page
             translucentStatusBar = true
             hasStableIds = true
             savedInstance = savedInstanceState
             showOnFirstLaunch = true
-
+            // Toolbar items.
             primaryItem("Home") {
                 icon = R.drawable.ic_home
                 selectable = false
             }
             // Divider places a line as visual dividing element.
-            divider {  }
-
-            primaryItem("QR Code") {
-                icon = R.drawable.ic_list
-                onClick (openActivity(QrCodeScanner::class))
-
-                selectable = false
-
-            }
-
             divider{}
-
             primaryItem("Send coin") {
                 icon = R.drawable.ic_list
                 onClick(openActivityLoggedIn(SendCoin::class))
@@ -93,23 +79,20 @@ class MainActivity : AppCompatActivity() {
             primaryItem("Addresses") {
                 icon = R.drawable.ic_list
                 onClick (openActivityLoggedIn(AddressPage::class))
-
                 selectable = false
-
             }
             divider {  }
             primaryItem("Logout") {
                 icon = R.drawable.ic_logout
                 onClick(openActivityLogOut(MainActivity::class))
             }
-
         }
 
         // Fetch the account balance on startup.
-        getAccBalance()
+        //getAccBalance()
         // Define action for "Get Balance" button.
         btn_show_balance.setOnClickListener{
-            getAccBalance()
+            openActivity(AddressPage::class)
         }
 
         txt_login_status.text = "switch is " + switch_login.isChecked
@@ -119,6 +102,14 @@ class MainActivity : AppCompatActivity() {
         })
 
     }
+
+    override fun onDestroy() {
+        StoredDataBase.destroyInstance()
+        sDbWorkerThread.quit()
+        super.onDestroy()
+
+    }
+
 
     // Function to open other screens when chosen in toolbar.
     private fun <T : Activity> openActivity(activity: KClass<T>): (View?) -> Boolean = {
@@ -177,15 +168,16 @@ class MainActivity : AppCompatActivity() {
 
     private fun fetchStoredDataFromDb() {
         val task = Runnable {
-            val weatherData =
-                    sDb?.storedDataDao()?.getAll()
-            sUiHandler.post({
-                if (weatherData == null || weatherData?.size == 0) {
+            val storageData = sDb?.storedDataDao()?.getAll()
+            println("HEEEEEEEEEEEEEEEEEEERRRRRRRRRRRRRRRRRRREEEEEEEEEEEEEEEEEEEEEEEEE")
+            println(storageData)
+            sUiHandler.post{
+                if (storageData == null || storageData.isEmpty()) {
                     txt_your_balance.hint = "No data in cache..!!"
                 } else {
-                    bindDataWithUi(storedData = weatherData?.get(0))
+                    bindDataWithUi(storedData = storageData[0])
                 }
-            })
+            }
         }
         sDbWorkerThread.postTask(task)
     }
