@@ -9,10 +9,12 @@ class DbWorkerThread(threadName: String) : HandlerThread(threadName) {
 
     override fun onLooperPrepared() {
         super.onLooperPrepared()
-        mWorkerHandler = Handler(looper)
+        //mWorkerHandler = Handler(looper)
+
     }
 
     fun postTask(task: Runnable) {
+        mWorkerHandler = Handler(looper)
         mWorkerHandler.post(task)
     }
 

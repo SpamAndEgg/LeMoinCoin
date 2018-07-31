@@ -28,29 +28,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var sDbWorkerThread: DbWorkerThread
     private val sUiHandler = Handler()
     private lateinit var result: Drawer
-
+    private var owner: List<StoredData>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        //android.os.Debug.waitForDebugger()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar_page)
-
-        // Database setup according to
-        // https://medium.com/mindorks/android-architecture-components-room-and-kotlin-f7b725c8d1d
-        sDbWorkerThread = DbWorkerThread("dbWorkerThread")
-        sDbWorkerThread.start()
-
-        sDb = StoredDataBase.getInstance(this)
-
-        var newData = StoredData()
-        newData.walletName = "Das"
-        newData.privateKey = "ist"
-        newData.publicKey = "ein Test!"
-
-
-        insertStoredDataInDb(newData)
-
-        fetchStoredDataFromDb()
 
         // Get info if user is logged in.
         val isLoggedIn = intent.getBooleanExtra("isLoggedIn", false)
@@ -88,6 +72,27 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+
+        // Database setup according to
+        // https://medium.com/mindorks/android-architecture-components-room-and-kotlin-f7b725c8d1d
+        sDbWorkerThread = DbWorkerThread("dbWorkerThread")
+        sDbWorkerThread.start()
+
+        sDb = StoredDataBase.getInstance(this)
+
+        var newData = StoredData()
+        newData.walletName = "Das2"
+        newData.privateKey = "ist2"
+        newData.publicKey = "ein Test!2"
+        newData.ownerName = "owner1"
+
+
+        insertStoredDataInDb(newData)
+        //fetchOwnerFromDb()
+        println("alalalalalalalalala it begins lalalalalalaslalalalala")
+
+
+
         // Fetch the account balance on startup.
         //getAccBalance()
         // Define action for "Get Balance" button.
@@ -101,14 +106,11 @@ class MainActivity : AppCompatActivity() {
             txt_login_status.text = "Login is " + switch_login.isChecked
         })
 
-    }
 
-    override fun onDestroy() {
-        StoredDataBase.destroyInstance()
-        sDbWorkerThread.quit()
-        super.onDestroy()
+
 
     }
+
 
 
     // Function to open other screens when chosen in toolbar.
@@ -163,14 +165,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun bindDataWithUi(storedData: StoredData?) {
+        println("ALL STORED DATA -----------------------------------------")
+        println(storedData)
         txt_your_balance.hint = storedData?.publicKey.toString()
     }
 
-    private fun fetchStoredDataFromDb() {
+    private fun fetchDataFromDb() {
         val task = Runnable {
             val storageData = sDb?.storedDataDao()?.getAll()
-            println("HEEEEEEEEEEEEEEEEEEERRRRRRRRRRRRRRRRRRREEEEEEEEEEEEEEEEEEEEEEEEE")
-            println(storageData)
+
             sUiHandler.post{
                 if (storageData == null || storageData.isEmpty()) {
                     txt_your_balance.hint = "No data in cache..!!"
@@ -182,8 +185,32 @@ class MainActivity : AppCompatActivity() {
         sDbWorkerThread.postTask(task)
     }
 
+    private fun fetchOwnerFromDb() {
+        val task = Runnable {
+            val storageData = sDb?.storedDataDao()?.getOwner()
+            owner = storageData
+            sUiHandler.post{
+                if (storageData == null || storageData.isEmpty()) {
+                    // Open new activity to get new owner.
+                    // Go to login screen
+                    val intent = Intent(this@MainActivity, LoginScreen::class.java)
+                    // Start the QR code scanner to get a key. The request code defines weather the qr scanner
+                    // scans the private key or the public key of the receiver.
+                    startActivity(intent)
+
+                } else {
+                    bindDataWithUi(storedData = storageData[0])
+                }
+            }
+        }
+        sDbWorkerThread.postTask(task)
+
+    }
+
     private fun insertStoredDataInDb(storedData: StoredData) {
         val task = Runnable { sDb?.storedDataDao()?.insert(storedData) }
+        println("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHERE")
+        println(task)
         sDbWorkerThread.postTask(task)
     }
 

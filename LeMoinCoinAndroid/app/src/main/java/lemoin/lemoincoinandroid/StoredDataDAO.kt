@@ -12,6 +12,9 @@ interface StoredDataDao {
     @Insert(onConflict = REPLACE)
     fun insert(storedData: StoredData)
 
+    @Query("SELECT * FROM storedData WHERE owner LIKE 'owner'")
+    fun getOwner(): List<StoredData>
+
     //@Query("DELETE from weatherData")
     //fun deleteAll()
 }

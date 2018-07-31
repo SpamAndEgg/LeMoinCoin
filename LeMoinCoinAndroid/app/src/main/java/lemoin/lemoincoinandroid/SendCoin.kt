@@ -15,8 +15,6 @@ import com.android.volley.toolbox.Volley
 import com.mikepenz.materialdrawer.Drawer
 import kotlinx.android.synthetic.main.send_coin.*
 import kotlinx.android.synthetic.main.toolbar.*
-import lemoin.lemoincoinandroid.R.id.*
-import lemoin.lemoincoinandroid.R.layout.toolbar
 import org.json.JSONObject
 import kotlin.reflect.KClass
 

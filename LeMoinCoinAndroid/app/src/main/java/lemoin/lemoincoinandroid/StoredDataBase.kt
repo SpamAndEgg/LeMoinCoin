@@ -3,7 +3,7 @@ package lemoin.lemoincoinandroid
 import android.arch.persistence.room.*
 import android.content.Context
 
-@Database(entities = arrayOf(StoredData::class), version = 1)
+@Database(entities = arrayOf(StoredData::class), version = 2)
 abstract class StoredDataBase : RoomDatabase() {
 
     abstract fun storedDataDao(): StoredDataDao
@@ -14,8 +14,11 @@ abstract class StoredDataBase : RoomDatabase() {
         fun getInstance(context: Context): StoredDataBase? {
             if (INSTANCE == null) {
                 synchronized(StoredDataBase::class) {
-                    INSTANCE = Room.inMemoryDatabaseBuilder(context.getApplicationContext(),
-                            StoredDataBase::class.java)
+                    // fallbackToDestructiveMigration will drop databases if a new version of
+                    // database is set up.
+                    INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
+                            StoredDataBase::class.java, "storage.db")
+                            .fallbackToDestructiveMigration()
                             .build()
                 }
             }
