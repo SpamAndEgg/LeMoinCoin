@@ -27,16 +27,16 @@ class LoginScreen : AppCompatActivity() {
         sDb = StoredDataBase.getInstance(this)
 
 
-        var newData = StoredData()
+        /*var newData = StoredData()
         newData.walletName = "Das2"
         newData.privateKey = "ist2"
         newData.publicKey = "ein Test!2"
-        newData.ownerName = "owner1"
-
-
+        newData.ownerName = "owner"
         insertStoredDataInDb(newData)
+        */
 
-        fetchOwnerFromDb()
+        // Check if an owner is already logged in. If so, forward to MainActivity.
+        checkOwnerInfo()
 
 
 
@@ -52,8 +52,15 @@ class LoginScreen : AppCompatActivity() {
         }
 
         btn_user_data_submit.setOnClickListener {
-            return@setOnClickListener
-
+            var userData = StoredData()
+            // Create database object for the owner.
+            userData.ownerName = "owner"
+            userData.privateKey = txt_user_key.text.toString()
+            userData.walletName = txt_user_name.text.toString()
+            // Save owner information to database.
+            insertStoredDataInDb(userData)
+            // Check if owner info was saved successfully, if so, forward to MainActivity.
+            checkOwnerInfo()
         }
 
 
@@ -73,7 +80,7 @@ class LoginScreen : AppCompatActivity() {
 
 
 
-    private fun fetchOwnerFromDb() {
+    private fun checkOwnerInfo() {
         val task = Runnable {
             val storageData = sDb?.storedDataDao()?.getOwner()
             sUiHandler.post{

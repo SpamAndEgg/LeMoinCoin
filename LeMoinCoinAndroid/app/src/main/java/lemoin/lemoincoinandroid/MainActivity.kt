@@ -9,6 +9,7 @@ import android.support.v4.content.ContextCompat.startActivity
 import android.text.TextUtils.isEmpty
 import android.view.View
 import co.zsmb.materialdrawerkt.builders.drawer
+import co.zsmb.materialdrawerkt.draweritems.badgeable.PrimaryDrawerItemKt
 import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
 import co.zsmb.materialdrawerkt.draweritems.divider
 import com.android.volley.Request
@@ -16,6 +17,7 @@ import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.mikepenz.materialdrawer.Drawer
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.toolbar.*
 import lemoin.lemoincoinandroid.R.id.*
@@ -28,7 +30,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var sDbWorkerThread: DbWorkerThread
     private val sUiHandler = Handler()
     private lateinit var result: Drawer
-    private var owner: List<StoredData>? = null
+    private var ownerName: String = "Who am I?"
+    private lateinit var drawerOwnerName: PrimaryDrawerItem
 
     override fun onCreate(savedInstanceState: Bundle?) {
         //android.os.Debug.waitForDebugger()
@@ -49,6 +52,11 @@ class MainActivity : AppCompatActivity() {
             savedInstance = savedInstanceState
             showOnFirstLaunch = true
             // Toolbar items.
+            drawerOwnerName = primaryItem ( ownerName ){
+                selectable = false
+            }
+
+
             primaryItem("Home") {
                 icon = R.drawable.ic_home
                 selectable = false
@@ -68,7 +76,7 @@ class MainActivity : AppCompatActivity() {
             divider {  }
             primaryItem("Logout") {
                 icon = R.drawable.ic_logout
-                onClick(openActivityLogOut(MainActivity::class))
+                onClick(openActivityLogOut())
             }
         }
 
@@ -79,19 +87,6 @@ class MainActivity : AppCompatActivity() {
         sDbWorkerThread.start()
 
         sDb = StoredDataBase.getInstance(this)
-
-        var newData = StoredData()
-        newData.walletName = "Das2"
-        newData.privateKey = "ist2"
-        newData.publicKey = "ein Test!2"
-        newData.ownerName = "owner1"
-
-
-        insertStoredDataInDb(newData)
-        //fetchOwnerFromDb()
-        println("alalalalalalalalala it begins lalalalalalaslalalalala")
-
-
 
         // Fetch the account balance on startup.
         //getAccBalance()
@@ -106,7 +101,8 @@ class MainActivity : AppCompatActivity() {
             txt_login_status.text = "Login is " + switch_login.isChecked
         })
 
-
+        // Update the owner name shown in the drawer.
+        updateDrawerOwnerName()
 
 
     }
@@ -131,8 +127,11 @@ class MainActivity : AppCompatActivity() {
         false
     }
 
-    private fun <T : Activity> openActivityLogOut(activity: KClass<T>): (View?) -> Boolean = {
-        val intent = Intent(this@MainActivity, activity.java)
+    private fun openActivityLogOut(): (View?) -> Boolean = {
+
+        deleteOwnerInDb()
+
+        val intent = Intent(this@MainActivity, LoginScreen::class.java)
         intent.putExtra("isLoggedIn", false)
         startActivity(intent)
         false
@@ -170,6 +169,8 @@ class MainActivity : AppCompatActivity() {
         txt_your_balance.hint = storedData?.publicKey.toString()
     }
 
+
+
     private fun fetchDataFromDb() {
         val task = Runnable {
             val storageData = sDb?.storedDataDao()?.getAll()
@@ -185,33 +186,28 @@ class MainActivity : AppCompatActivity() {
         sDbWorkerThread.postTask(task)
     }
 
-    private fun fetchOwnerFromDb() {
-        val task = Runnable {
-            val storageData = sDb?.storedDataDao()?.getOwner()
-            owner = storageData
-            sUiHandler.post{
-                if (storageData == null || storageData.isEmpty()) {
-                    // Open new activity to get new owner.
-                    // Go to login screen
-                    val intent = Intent(this@MainActivity, LoginScreen::class.java)
-                    // Start the QR code scanner to get a key. The request code defines weather the qr scanner
-                    // scans the private key or the public key of the receiver.
-                    startActivity(intent)
-
-                } else {
-                    bindDataWithUi(storedData = storageData[0])
-                }
-            }
-        }
-        sDbWorkerThread.postTask(task)
-
-    }
 
     private fun insertStoredDataInDb(storedData: StoredData) {
         val task = Runnable { sDb?.storedDataDao()?.insert(storedData) }
         println("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHERE")
         println(task)
         sDbWorkerThread.postTask(task)
+    }
+
+    private fun deleteOwnerInDb(){
+        val task = Runnable {sDb?.storedDataDao()?.deleteOwner()}
+        sDbWorkerThread.postTask(task)
+    }
+
+    private fun updateDrawerOwnerName() {
+        val task = Runnable {
+            val ownerInfo = sDb?.storedDataDao()?.getOwner()
+            //ownerName = ownerInfo.toString()
+            drawerOwnerName.withName(ownerInfo)
+            result.updateItem(drawerOwnerName)
+        }
+        sDbWorkerThread.postTask(task)
+
     }
 
 }
