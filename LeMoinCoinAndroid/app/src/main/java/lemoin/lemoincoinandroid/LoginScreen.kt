@@ -93,6 +93,8 @@ class LoginScreen : AppCompatActivity() {
                     // Start the QR code scanner to get a key. The request code defines weather the qr scanner
                     // scans the private key or the public key of the receiver.
                     startActivity(intent)
+
+
                 }
             }
         }

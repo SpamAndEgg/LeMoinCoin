@@ -5,7 +5,6 @@ import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
-import android.support.v4.content.ContextCompat.startActivity
 import android.text.TextUtils.isEmpty
 import android.view.View
 import co.zsmb.materialdrawerkt.builders.drawer
@@ -30,8 +29,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var sDbWorkerThread: DbWorkerThread
     private val sUiHandler = Handler()
     private lateinit var result: Drawer
-    private var ownerName: String = "Who am I?"
     private lateinit var drawerOwnerName: PrimaryDrawerItem
+    private lateinit var sharedFun: SharedFun
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         //android.os.Debug.waitForDebugger()
@@ -39,20 +39,23 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(toolbar_page)
 
+        sharedFun = SharedFun(this, this@MainActivity, savedInstanceState)
+
         // Get info if user is logged in.
         val isLoggedIn = intent.getBooleanExtra("isLoggedIn", false)
         // Set the switch state according to weather user is logged in or not.
         switch_login.isChecked = isLoggedIn
 
-        // Define the toolbar.
-        result = drawer {
+
+// Define the toolbar.
+        /*result = this.drawer {
             toolbar = this@MainActivity.toolbar_page
             translucentStatusBar = true
             hasStableIds = true
             savedInstance = savedInstanceState
             showOnFirstLaunch = true
             // Toolbar items.
-            drawerOwnerName = primaryItem ( ownerName ){
+            drawerOwnerName = primaryItem ( " " ){
                 selectable = false
             }
 
@@ -78,8 +81,9 @@ class MainActivity : AppCompatActivity() {
                 icon = R.drawable.ic_logout
                 onClick(openActivityLogOut())
             }
-        }
+        }*/
 
+        sharedFun.setDrawer()
 
         // Database setup according to
         // https://medium.com/mindorks/android-architecture-components-room-and-kotlin-f7b725c8d1d
@@ -102,7 +106,7 @@ class MainActivity : AppCompatActivity() {
         })
 
         // Update the owner name shown in the drawer.
-        updateDrawerOwnerName()
+        //sharedFun.updateDrawerOwnerName()
 
 
     }
@@ -129,7 +133,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun openActivityLogOut(): (View?) -> Boolean = {
 
-        deleteOwnerInDb()
+        sharedFun.deleteOwnerInDb()
 
         val intent = Intent(this@MainActivity, LoginScreen::class.java)
         intent.putExtra("isLoggedIn", false)
@@ -194,20 +198,6 @@ class MainActivity : AppCompatActivity() {
         sDbWorkerThread.postTask(task)
     }
 
-    private fun deleteOwnerInDb(){
-        val task = Runnable {sDb?.storedDataDao()?.deleteOwner()}
-        sDbWorkerThread.postTask(task)
-    }
 
-    private fun updateDrawerOwnerName() {
-        val task = Runnable {
-            val ownerInfo = sDb?.storedDataDao()?.getOwner()
-            //ownerName = ownerInfo.toString()
-            drawerOwnerName.withName(ownerInfo)
-            result.updateItem(drawerOwnerName)
-        }
-        sDbWorkerThread.postTask(task)
-
-    }
 
 }
