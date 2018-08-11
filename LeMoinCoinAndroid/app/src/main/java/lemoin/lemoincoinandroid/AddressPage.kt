@@ -1,28 +1,19 @@
 package lemoin.lemoincoinandroid
 
-import android.app.Activity
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.support.v4.content.ContextCompat.startActivity
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.ListView
 import android.widget.TextView
-import co.zsmb.materialdrawerkt.builders.drawer
-import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
-import co.zsmb.materialdrawerkt.draweritems.divider
-import com.mikepenz.materialdrawer.Drawer
-import kotlinx.android.synthetic.main.activity_address_page.*
 import kotlinx.android.synthetic.main.toolbar.*
-import kotlin.reflect.KClass
 
 class AddressPage : AppCompatActivity() {
 
-    private lateinit var result: Drawer
+    private lateinit var sharedFun: SharedFun
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,41 +22,9 @@ class AddressPage : AppCompatActivity() {
 
         // Get the state if user is logged in.
         val isLoggedIn = intent.getBooleanExtra("isLoggedIn", false)
+        sharedFun = SharedFun(this, this@AddressPage, savedInstanceState)
 
-        result = drawer {
-
-            toolbar = this@AddressPage.toolbar_page
-            translucentStatusBar = true
-            hasStableIds = true
-            savedInstance = savedInstanceState
-            showOnFirstLaunch = true
-
-            primaryItem("Home") {
-                icon = R.drawable.ic_home
-                onClick (openActivity(MainActivity::class, isLoggedIn))
-
-            }
-            // Divider places a line as visual dividing element.
-            divider {  }
-
-            primaryItem("Send coin") {
-                icon = R.drawable.ic_list
-                onClick (openActivityLoggedIn(SendCoin::class, isLoggedIn))
-            }
-            divider {  }
-            primaryItem("Addresses") {
-                icon = R.drawable.ic_list
-
-                selectable = false
-            }
-            divider {  }
-            primaryItem("Logout") {
-                icon = R.drawable.ic_logout
-                onClick(openActivityLogOut(MainActivity::class))
-            }
-
-        }
-
+        sharedFun.setDrawer()
 
 
 
@@ -81,30 +40,6 @@ class AddressPage : AppCompatActivity() {
 
     }
 
-    // Function to open other screens when chosen in toolbar.
-    private fun <T : Activity> openActivity(activity: KClass<T>, isLoggedIn: Boolean): (View?) -> Boolean = {
-        val intent = Intent(this@AddressPage, activity.java)
-        intent.putExtra("isLoggedIn", isLoggedIn)
-        startActivity(intent)
-        false
-    }
-
-    // Function to open other screens only when logged in.
-    private fun <T : Activity> openActivityLoggedIn(activity: KClass<T>, isLoggedIn: Boolean): (View?) -> Boolean = {
-        if(isLoggedIn) {
-            val intent = Intent(this@AddressPage, activity.java)
-            intent.putExtra("isLoggedIn", isLoggedIn)
-            startActivity(intent)
-        }
-        false
-    }
-
-    private fun <T : Activity> openActivityLogOut(activity: KClass<T>): (View?) -> Boolean = {
-        val intent = Intent(this@AddressPage, activity.java)
-        intent.putExtra("isLoggedIn", false)
-        startActivity(intent)
-        false
-    }
 
     private class MyCustomAdapter(context: Context): BaseAdapter(){
 

@@ -1,35 +1,23 @@
 package lemoin.lemoincoinandroid
 
-import android.app.Activity
-import android.content.Intent
+
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
-import android.text.TextUtils.isEmpty
 import android.view.View
-import co.zsmb.materialdrawerkt.builders.drawer
-import co.zsmb.materialdrawerkt.draweritems.badgeable.PrimaryDrawerItemKt
-import co.zsmb.materialdrawerkt.draweritems.badgeable.primaryItem
-import co.zsmb.materialdrawerkt.draweritems.divider
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
-import com.mikepenz.materialdrawer.Drawer
-import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.toolbar.*
-import lemoin.lemoincoinandroid.R.id.*
 import org.json.JSONObject
-import kotlin.reflect.KClass
 
 class MainActivity : AppCompatActivity() {
 
     private var sDb: StoredDataBase? = null
     private lateinit var sDbWorkerThread: DbWorkerThread
     private val sUiHandler = Handler()
-    private lateinit var result: Drawer
-    private lateinit var drawerOwnerName: PrimaryDrawerItem
     private lateinit var sharedFun: SharedFun
 
 
@@ -47,42 +35,6 @@ class MainActivity : AppCompatActivity() {
         switch_login.isChecked = isLoggedIn
 
 
-// Define the toolbar.
-        /*result = this.drawer {
-            toolbar = this@MainActivity.toolbar_page
-            translucentStatusBar = true
-            hasStableIds = true
-            savedInstance = savedInstanceState
-            showOnFirstLaunch = true
-            // Toolbar items.
-            drawerOwnerName = primaryItem ( " " ){
-                selectable = false
-            }
-
-
-            primaryItem("Home") {
-                icon = R.drawable.ic_home
-                selectable = false
-            }
-            // Divider places a line as visual dividing element.
-            divider{}
-            primaryItem("Send coin") {
-                icon = R.drawable.ic_list
-                onClick(openActivityLoggedIn(SendCoin::class))
-            }
-            divider {  }
-            primaryItem("Addresses") {
-                icon = R.drawable.ic_list
-                onClick (openActivityLoggedIn(AddressPage::class))
-                selectable = false
-            }
-            divider {  }
-            primaryItem("Logout") {
-                icon = R.drawable.ic_logout
-                onClick(openActivityLogOut())
-            }
-        }*/
-
         sharedFun.setDrawer()
 
         // Database setup according to
@@ -96,7 +48,7 @@ class MainActivity : AppCompatActivity() {
         //getAccBalance()
         // Define action for "Get Balance" button.
         btn_show_balance.setOnClickListener{
-            openActivity(AddressPage::class)
+            println("Show balance")
         }
 
         txt_login_status.text = "switch is " + switch_login.isChecked
@@ -112,34 +64,6 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
-    // Function to open other screens when chosen in toolbar.
-    private fun <T : Activity> openActivity(activity: KClass<T>): (View?) -> Boolean = {
-        val intent = Intent(this@MainActivity, activity.java)
-        intent.putExtra("isLoggedIn", switch_login.isChecked)
-        startActivity(intent)
-        false
-    }
-
-    // Function to open other screens only when logged in.
-    private fun <T : Activity> openActivityLoggedIn(activity: KClass<T>): (View?) -> Boolean = {
-       if(switch_login.isChecked) {
-           val intent = Intent(this@MainActivity, activity.java)
-           intent.putExtra("isLoggedIn", switch_login.isChecked)
-           startActivity(intent)
-       }
-        false
-    }
-
-    private fun openActivityLogOut(): (View?) -> Boolean = {
-
-        sharedFun.deleteOwnerInDb()
-
-        val intent = Intent(this@MainActivity, LoginScreen::class.java)
-        intent.putExtra("isLoggedIn", false)
-        startActivity(intent)
-        false
-    }
 
     // Function to get the current balance of a users account.
     private fun getAccBalance() {

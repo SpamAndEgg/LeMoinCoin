@@ -29,6 +29,7 @@ class SharedFun (context: Activity, packageContext: Activity, savedInstanceState
     private val context = context
     private val packageContext = packageContext
     private val savedInstanceState = savedInstanceState
+    private val localClassName = context.localClassName
 
     // Initializing code goes in the "init" function.
     init {
@@ -52,19 +53,31 @@ class SharedFun (context: Activity, packageContext: Activity, savedInstanceState
 
             primaryItem("Home") {
                 icon = R.drawable.ic_home
-                selectable = false
+                if (localClassName == "MainActivity") {
+                    selectable = false
+                } else {
+                    onClick(openActivity(MainActivity::class))
+                }
+
             }
             // Divider places a line as visual dividing element.
             divider{}
             primaryItem("Send coin") {
                 icon = R.drawable.ic_list
-                onClick(openActivity(SendCoin::class))
+                if (localClassName == "SendCoin") {
+                    selectable = false
+                } else {
+                    onClick(openActivity(SendCoin::class))
+                }
             }
             divider {  }
             primaryItem("Addresses") {
                 icon = R.drawable.ic_list
-                onClick (openActivity(AddressPage::class))
-                selectable = false
+                if (localClassName == "AddressPage") {
+                    selectable = false
+                } else {
+                    onClick(openActivity(AddressPage::class))
+                }
             }
             divider {  }
             primaryItem("Logout") {
