@@ -15,6 +15,12 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import kotlinx.android.synthetic.main.toolbar.*
 import kotlin.reflect.KClass
 import android.support.v4.content.ContextCompat.startActivity
+import android.widget.TextView
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.Volley
+import org.json.JSONObject
 
 
 
@@ -91,19 +97,63 @@ class SharedFun (context: Activity, packageContext: Activity, savedInstanceState
 
     }
 
-    fun deleteOwnerInDb(){
+    private fun deleteOwnerInDb(){
         val task = Runnable {sDb?.storedDataDao()?.deleteOwner()}
         sDbWorkerThread.postTask(task)
     }
 
-    fun updateDrawerOwnerName(result: Drawer, drawerOwnerName: PrimaryDrawerItem) {
+    fun updateOwnerAddress(addressText: TextView) {
+        val task = Runnable {
+            val ownerAddress = sDb?.storedDataDao()?.getOwnerAddress()
+            addressText.text = "0x" + ownerAddress
+        }
+        sDbWorkerThread.postTask(task)
+    }
+
+    fun updateOwnerBalance(balanceText: TextView) {
+        val task = Runnable {
+            val ownerAddress = sDb?.storedDataDao()?.getOwnerAddress()
+            updateAccBalance("0x" + ownerAddress, balanceText)
+
+        }
+        sDbWorkerThread.postTask(task)
+    }
+
+
+
+    private fun updateDrawerOwnerName(result: Drawer, drawerOwnerName: PrimaryDrawerItem) {
         val task = Runnable {
             val ownerInfo = sDb?.storedDataDao()?.getOwner()
-            //ownerName = ownerInfo.toString()
             drawerOwnerName.withName(ownerInfo)
             result.updateItem(drawerOwnerName)
         }
         sDbWorkerThread.postTask(task)
+
+    }
+
+    // Function to get the current balance of a users account.
+    private fun updateAccBalance(address: String?, balanceText: TextView) {
+        // Create new queue for HTTP requests.
+        val queue = Volley.newRequestQueue(context)
+        // Get the URL of the server to show the balance.
+        val serverUrl: String = context.getString(R.string.server_url)
+        val url = serverUrl.plus("/get_balance")
+        // Create a JSON object containing the public key, which will be used by the server to get
+        // the balance.
+        val reqParam = JSONObject()
+        reqParam.put("pub_key", address)
+        // Create the request object.
+        val req = JsonObjectRequest(Request.Method.POST, url, reqParam,
+                Response.Listener{
+                    response ->
+                    // Write the balance in the according field.
+                    balanceText.hint = "Your Balance is " + response.getString("balance") + " LeMoins."
+
+                }, Response.ErrorListener {
+            balanceText.hint = "Balance couldn't be fetched :("
+        })
+        // Add the request object to the queue.
+        queue.add(req)
 
     }
 

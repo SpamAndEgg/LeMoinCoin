@@ -26,11 +26,10 @@ class SendCoin : AppCompatActivity() {
         setContentView(R.layout.send_coin)
         setSupportActionBar(toolbar_page)
 
-        var isLoggedIn = intent.getBooleanExtra("isLoggedIn", false)
         sharedFun = SharedFun(this, this@SendCoin, savedInstanceState)
-
-
         sharedFun.setDrawer()
+
+
 
         // Define action for "Send Coin" button.
         btn_send_coin.setOnClickListener{

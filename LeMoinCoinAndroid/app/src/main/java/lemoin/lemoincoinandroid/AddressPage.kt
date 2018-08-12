@@ -20,20 +20,13 @@ class AddressPage : AppCompatActivity() {
         setContentView(R.layout.activity_address_page)
         setSupportActionBar(toolbar_page)
 
-        // Get the state if user is logged in.
-        val isLoggedIn = intent.getBooleanExtra("isLoggedIn", false)
-        sharedFun = SharedFun(this, this@AddressPage, savedInstanceState)
 
+        sharedFun = SharedFun(this, this@AddressPage, savedInstanceState)
         sharedFun.setDrawer()
 
 
 
-        val listView = findViewById<ListView>(R.id.main_listview)
-        val redColor = Color.parseColor("#FF0000")
-        listView.setBackgroundColor(redColor)
 
-        // "this" is the current activity.
-        listView.adapter = MyCustomAdapter(this)
 
 
 
@@ -41,31 +34,5 @@ class AddressPage : AppCompatActivity() {
     }
 
 
-    private class MyCustomAdapter(context: Context): BaseAdapter(){
-
-        private val mContext: Context
-
-        init {
-            mContext = context
-        }
-
-        override fun getCount(): Int {
-            return 5
-        }
-
-        override fun getItemId(position: Int): Long {
-            return position.toLong()
-        }
-        override fun getItem(p0: Int): Any {
-            return "TestString"
-        }
-
-        override fun getView(position: Int, convertView: View?, viewGroup: ViewGroup?): View {
-            val textView = TextView(mContext)
-            textView.text = "Here is something"
-            return textView
-
-        }
-    }
 
 }

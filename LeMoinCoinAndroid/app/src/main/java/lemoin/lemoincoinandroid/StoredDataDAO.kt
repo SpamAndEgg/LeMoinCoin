@@ -15,6 +15,9 @@ interface StoredDataDao {
     @Query("SELECT name FROM storedData WHERE owner LIKE 'owner'")
     fun getOwner(): String
 
+    @Query("SELECT publicKey FROM storedData WHERE owner LIKE 'owner'")
+    fun getOwnerAddress(): String
+
     @Query("DELETE FROM storedData WHERE owner LIKE 'owner'")
     fun deleteOwner()
 

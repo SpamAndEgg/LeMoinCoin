@@ -11,14 +11,11 @@
 
     <include layout = "@layout/toolbar"/>
 
-    <ListView
-        android:id="@+id/main_listview"
+    <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="400dp"
-        android:background="@color/colorAccent">
+        android:layout_height="300dp">
+    </android.support.v7.widget.RecyclerView>
 
-
-    </ListView>
 
 
 
@@ -36,7 +33,11 @@
             android:layout_height="wrap_content"
             app:srcCompat="@mipmap/ic_launcher_foreground" />
 
+
+
     </LinearLayout>
+
+
 
 
 

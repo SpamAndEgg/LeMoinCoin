@@ -22,41 +22,19 @@
         android:paddingRight="16dp"
         android:orientation="vertical">
 
-
-
-        <EditText
-            android:id="@+id/txt_your_add"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="0x154e7C0F88476180175721ae378E7f59959e3891"
-            android:hint="Your Address"/>
-
-
         <TextView
             android:id="@+id/txt_your_balance"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Balance:"
+            android:layout_marginTop="20dp"
             android:layout_marginBottom="12dp"/>
 
         <Button
             android:id="@+id/btn_show_balance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Show Balance" />
-
-
-        <Switch
-            android:id="@+id/switch_login"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Login" />
-
-        <TextView
-            android:id="@+id/txt_login_status"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="TextView" />
+            android:text="Update Balance" />
 
         <LinearLayout
             android:layout_width="match_parent"
