@@ -12,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_foreground"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name=".LoginScreen">
+        <activity android:name=".LoginScreen"
+            android:label="Login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,10 +21,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".MainActivity"/>
-        <activity android:name=".AddressPage" />
-        <activity android:name=".SendCoin" />
+        <activity android:name=".AddressPage"
+            android:label="Address Book"/>
+        <activity android:name=".SendCoin"
+            android:label="Send Coin"/>
         <activity android:name=".AddActivity"/>
-
         <activity android:name=".QrCodeScanner" />
         <!-- Implemented for the qr scanner via google vision. -->
         <meta-data android:name="com.google.android.gms.vision.DEPENDENCIES"
