@@ -114,7 +114,7 @@ class SendCoin : AppCompatActivity() {
                     txt_send_status.hint = "Transaction failed :("
                 })
                 req.setRetryPolicy(DefaultRetryPolicy(100000, 0, 1f))
-                
+
                 // Add the request object to the queue.
                 queue.add(req)
             }

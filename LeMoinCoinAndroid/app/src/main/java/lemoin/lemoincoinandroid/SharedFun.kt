@@ -86,6 +86,15 @@ class SharedFun (context: Activity, packageContext: Activity, savedInstanceState
                 }
             }
             divider {  }
+            primaryItem("Share address") {
+                icon = R.drawable.ic_list
+                if (localClassName == "ShareQR") {
+                    selectable = false
+                } else {
+                    onClick(openActivity(ShareQR::class))
+                }
+            }
+            divider {  }
             primaryItem("Logout") {
                 icon = R.drawable.ic_logout
                 onClick(openActivityLogOut())
