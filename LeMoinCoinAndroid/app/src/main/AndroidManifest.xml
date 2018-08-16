@@ -29,6 +29,7 @@
         <activity android:name=".AddContact"
             android:label="Add Contact"/>
         <activity android:name=".QrCodeScanner" />
+        <activity android:name=".ShareQR" />
         <!-- Implemented for the qr scanner via google vision. -->
         <meta-data android:name="com.google.android.gms.vision.DEPENDENCIES"
             android:value="barcode"></meta-data>

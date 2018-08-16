@@ -14,7 +14,7 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
-
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -55,5 +55,6 @@ dependencies {
     testImplementation "android.arch.persistence.room:testing:1.0.0"
     implementation "android.arch.persistence.room:rxjava2:1.0.0"
     implementation 'me.dm7.barcodescanner:zbar:1.9.8'
-
+    implementation 'com.github.kenglxn.QRGen:android:2.5.0'
+    implementation 'com.android.support:multidex:1.0.3'
 }

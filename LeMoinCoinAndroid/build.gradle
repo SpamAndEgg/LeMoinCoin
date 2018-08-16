@@ -9,7 +9,7 @@ buildscript {
     dependencies {
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
-        classpath 'com.android.tools.build:gradle:3.1.3'
+        classpath 'com.android.tools.build:gradle:3.1.4'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
 }
@@ -18,7 +18,7 @@ allprojects {
     repositories {
         google()
         jcenter()
-        // THIS IS USED TO INCLUDE KETHEREUM FROM GITHUB.
+        // THIS IS USED TO INCLUDE KETHEREUM FROM GITHUB. And a QR-Code-Generator as well.
         maven { url 'https://jitpack.io'}
     }
 }
