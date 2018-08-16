@@ -26,6 +26,8 @@
         <activity android:name=".SendCoin"
             android:label="Send Coin"/>
         <activity android:name=".AddActivity"/>
+        <activity android:name=".AddContact"
+            android:label="Add Contact"/>
         <activity android:name=".QrCodeScanner" />
         <!-- Implemented for the qr scanner via google vision. -->
         <meta-data android:name="com.google.android.gms.vision.DEPENDENCIES"

@@ -161,8 +161,6 @@ class SharedFun (context: Activity, packageContext: Activity, savedInstanceState
 
     private fun <T : Activity> openActivity(activity: KClass<T>): (View?) -> Boolean = {
         val intent = Intent(packageContext, activity.java)
-        intent.putExtra("isLoggedIn", true)
-
         startActivity(context, intent, null)
         false
     }

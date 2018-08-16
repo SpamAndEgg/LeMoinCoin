@@ -35,14 +35,6 @@ class LoginScreen : AppCompatActivity() {
         sDb = StoredDataBase.getInstance(this)
 
 
-        /*var newData = StoredData()
-        newData.walletName = "Das2"
-        newData.privateKey = "ist2"
-        newData.publicKey = "ein Test!2"
-        newData.ownerName = "owner"
-        insertStoredDataInDb(newData)
-        */
-
         // Check if an owner is already logged in. If so, forward to MainActivity.
         checkOwnerInfo()
 
@@ -113,7 +105,6 @@ class LoginScreen : AppCompatActivity() {
 
     private fun insertStoredDataInDb(storedData: StoredData) {
         val task = Runnable { sDb?.storedDataDao()?.insert(storedData) }
-        println(task)
         sDbWorkerThread.postTask(task)
     }
 

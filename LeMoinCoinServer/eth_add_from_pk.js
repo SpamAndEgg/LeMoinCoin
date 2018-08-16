@@ -9,19 +9,17 @@ function get_eth_add (privateKey) {
   // Generator point
   var G = ec.g;
   // EC multiplication to determine public point
-  console.log("PK IS:");
-  console.log(privateKey);
   var pubPoint=G.mul(privateKey);
   //32 bit x co-ordinate of public point
   var x = pubPoint.getX().toBuffer();
    //32 bit y co-ordinate of public point
   var y = pubPoint.getY().toBuffer();
 
-  var publicKey =Buffer.concat([x,y])
+  var publicKey =Buffer.concat([x,y]);
 
-  console.log("public key::"+publicKey.toString('hex'))
+  console.log("public key::"+publicKey.toString('hex'));
   // keccak256 hash of  publicKey
-  const address = keccak256(publicKey)
+  const address = keccak256(publicKey);
 
   const buf2 = Buffer.from(address, 'hex');
   // take lat 20 bytes as ethereum adress
