@@ -2,6 +2,6 @@
     <string name="app_name">LeMoinCoin</string>
     <string name="title_activity_add">AddActivity</string>
     <string name="title_activity_qr">qr</string>
-    <string name="server_url">http://192.168.11.91:8000</string>
+    <string name="server_url">http://172.21.43.33:8000</string>
 
 </resources>

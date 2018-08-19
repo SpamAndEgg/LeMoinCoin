@@ -24,7 +24,7 @@ interface StoredDataDao {
     @Query("DELETE FROM storedData WHERE owner LIKE 'owner'")
     fun deleteOwner()
 
-    @Query("SELECT * FROM storedData WHERE owner LIKE 'contact'")
+    @Query("SELECT * FROM storedData WHERE owner LIKE 'contact' ORDER BY name")
     fun getContact(): List<StoredData>
 
     @Query("DELETE FROM storedData WHERE owner LIKE 'contact'")

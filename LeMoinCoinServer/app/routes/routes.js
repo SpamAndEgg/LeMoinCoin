@@ -7,6 +7,7 @@ var eth_add_from_pk = require('../../eth_add_from_pk');
 
 // Load the LeMoinCoin Contract data.
 var LeMoinCoin = LeMoinCoinContract.LeMoinCoin;
+var track_n_transaction = null;
 
 module.exports = function(app, db) {
   app.post('/notes', (req, res) => {
@@ -44,15 +45,26 @@ module.exports = function(app, db) {
 
     // Get the ethereum address (derived from the public key).
     var pub_add = eth_add_from_pk(pri_key);
+    var n_transaction = 0;
+    var this_n_transaction = web3.eth.getTransactionCount(pub_add);
+    if (track_n_transaction == null) {
+      n_transaction = this_n_transaction;
+    } else if (track_n_transaction >= this_n_transaction) {
+      // Case: Transactio number in chain the same as tracked number. This
+      // means, the last transaction was not logged yet.
+      n_transaction = track_n_transaction + 1;
+    } else {
+      n_transaction = this_n_transaction;
+    }
+    track_n_transaction = n_transaction;
 
-    var n_transaction = web3.eth.getTransactionCount(pub_add) + 1
     console.log(`Number of this transaction: ${n_transaction}`);
 
     // Get the nonce of the sender.
 
     var gas_price = LeMoinCoinContract.web3.eth.gasPrice;
     const gasPriceHex = web3.toHex(gas_price);
-    const gasLimitHex = web3.toHex(50000);
+    const gasLimitHex = web3.toHex(100000);
 
     var raw_transaction = {
       //from: pub_key,
@@ -60,7 +72,8 @@ module.exports = function(app, db) {
       value: 0,
       gas: gasLimitHex,
       gasPrice: gasPriceHex,
-      nonce: web3.eth.getTransactionCount(pub_add),
+      //nonce: web3.eth.getTransactionCount(pub_add),
+      nonce: n_transaction,
       data: LeMoinCoin.transfer.getData(send_to_add, amount, {from: pub_add}),
     };
 

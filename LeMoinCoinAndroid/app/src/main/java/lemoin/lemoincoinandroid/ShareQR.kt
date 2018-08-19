@@ -37,7 +37,8 @@ class ShareQR : AppCompatActivity() {
 
     private fun getQrCode() {
         val task = Runnable {
-            val storageData = sDb?.storedDataDao()?.getOwnerAddress()
+            var storageData = sDb?.storedDataDao()?.getOwnerAddress()
+            storageData = "0x" + storageData
             sUiHandler.post{
                 //Toast.makeText(getApplicationContext(),storageData,Toast.LENGTH_LONG).show()
                 val myBitmap = QRCode.from(storageData).bitmap()

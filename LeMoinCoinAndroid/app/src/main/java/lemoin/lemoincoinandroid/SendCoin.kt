@@ -107,7 +107,7 @@ class SendCoin : AppCompatActivity() {
                 val req = JsonObjectRequest(Request.Method.POST, url, reqParam,
                         Response.Listener{
                             response ->
-                            // Write the status in the textbox as feedback for the user.
+                            // Write the status in the text box as feedback for the user.
                             txt_send_status.hint = response.getString("status")
 
                         }, Response.ErrorListener {
