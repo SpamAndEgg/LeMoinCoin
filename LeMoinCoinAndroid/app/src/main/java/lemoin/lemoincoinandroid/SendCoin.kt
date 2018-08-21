@@ -15,7 +15,12 @@ import org.json.JSONObject
 import com.android.volley.DefaultRetryPolicy
 import com.android.volley.RetryPolicy
 import javax.xml.datatype.DatatypeConstants.SECONDS
-
+import android.text.Editable
+import android.text.TextWatcher
+import java.math.BigInteger
+import java.text.DecimalFormat
+import java.text.NumberFormat
+import java.util.*
 
 
 class SendCoin : AppCompatActivity() {
@@ -49,6 +54,8 @@ class SendCoin : AppCompatActivity() {
         }
 
         txt_receiver_address.setText(sendToAdd)
+
+        send_coin_amount.addTextChangedListener(onTextChangedListener())
 
 
         // Define action for "Send Coin" button.
@@ -97,12 +104,20 @@ class SendCoin : AppCompatActivity() {
                 // Get the URL of the server to transfer coins.
                 val serverUrl: String = getString(R.string.server_url)
                 val url = serverUrl.plus("/transfer")
+                // While the amount of coins is entered with two decimal points but is handled by
+                // the smart contract as an int, it has to be converted.
+                var amountOfCoin = send_coin_amount.text.toString()
+                amountOfCoin = amountOfCoin.replace("[.,]".toRegex(), "")
+                // Remove starting zeros from the amount of coin string.
+                amountOfCoin = amountOfCoin.replace("^0+".toRegex(), "")
+                println("The amount of coins to send issssssssssssssssssssssssssssssssssssssssss")
+                println(amountOfCoin)
                 // Create a JSON object containing the private key of the account to send money from, the
                 // public key of the account to send money to and the amount of coins to transfer.
                 val reqParam = JSONObject()
                 reqParam.put("pri_key", privateKey)
                 reqParam.put("send_to", txt_receiver_address.text)
-                reqParam.put("amount", send_coin_amount.text)
+                reqParam.put("amount", amountOfCoin)
                 // Create the request object.
                 val req = JsonObjectRequest(Request.Method.POST, url, reqParam,
                         Response.Listener{
@@ -120,6 +135,43 @@ class SendCoin : AppCompatActivity() {
             }
         }
         sDbWorkerThread.postTask(task)
+    }
+
+    private fun onTextChangedListener(): TextWatcher {
+        return object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
+
+            }
+            override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
+                // Display input numbers always in the format "#.##".
+                send_coin_amount.removeTextChangedListener(this)
+
+                try {
+                    var originalString = s.toString().replace("[,.]".toRegex(), "")
+                    val parsed = originalString.toDouble()
+                    val numberToFormat: NumberFormat
+                    val formattedString: String
+
+                    if (parsed == 0.0) {
+                        formattedString = "0.00"
+                    } else {
+                        numberToFormat = NumberFormat.getNumberInstance()
+                        numberToFormat.minimumFractionDigits = 2
+                        formattedString = numberToFormat.format(parsed/100)
+
+                    }
+                    // Setting formatted text in text box.
+                    send_coin_amount.setText(formattedString)
+                    send_coin_amount.setSelection(formattedString.length)
+                } catch (nfe: NumberFormatException) {
+                    nfe.printStackTrace()
+                }
+                send_coin_amount.addTextChangedListener(this)
+            }
+            override fun afterTextChanged(s: Editable) {
+
+            }
+        }
     }
 
 }

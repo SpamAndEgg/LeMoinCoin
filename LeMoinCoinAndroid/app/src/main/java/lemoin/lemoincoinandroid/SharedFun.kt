@@ -21,7 +21,7 @@ import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import org.json.JSONObject
-
+import java.text.NumberFormat
 
 
 class SharedFun (context: Activity, packageContext: Activity, savedInstanceState: Bundle?) {
@@ -155,8 +155,14 @@ class SharedFun (context: Activity, packageContext: Activity, savedInstanceState
         val req = JsonObjectRequest(Request.Method.POST, url, reqParam,
                 Response.Listener{
                     response ->
+                    val amountCoin = response.getString("balance").toInt()
+                    // Display the number with two decimals.
+                    val numberToFormat = NumberFormat.getNumberInstance()
+                    numberToFormat.minimumFractionDigits = 2
+                    val formattedString = numberToFormat.format(amountCoin/100)
+
                     // Write the balance in the according field.
-                    balanceText.hint = "Your Balance is " + response.getString("balance") + " LeMoins."
+                    balanceText.hint = "Your Balance is " + formattedString + " LeMoins."
 
                 }, Response.ErrorListener {
             balanceText.hint = "Balance couldn't be fetched :("
