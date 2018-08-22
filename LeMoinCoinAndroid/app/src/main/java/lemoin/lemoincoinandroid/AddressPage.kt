@@ -53,7 +53,7 @@ class AddressPage : AppCompatActivity() {
             val contactData = sDb?.storedDataDao()?.getContact()
             sUiHandler.post{
                 if (contactData == null) {
-                    println("OPENING CONTACT DATA FAIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIILED")
+                    println("AddressPage.kt: OPENING CONTACT DATA FAILED")
                 } else {
                     // Address page inspired by
                     // https://www.youtube.com/watch?v=jS0buQyfJfs&list=PL0dzCUj1L5JGfHj1lwxOq67zAJV3e1S9S

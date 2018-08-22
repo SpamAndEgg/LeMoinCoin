@@ -27,6 +27,7 @@
             android:id="@+id/txt_receiver_address"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:singleLine="true"
             android:hint="Address of receiver"/>
 
         <Button
@@ -42,6 +43,7 @@
             android:layout_height="wrap_content"
             android:hint="amount"
             android:digits="0123456789"
+            android:singleLine="true"
             android:inputType="numberDecimal"/>
 
         <LinearLayout

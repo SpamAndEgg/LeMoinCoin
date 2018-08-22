@@ -111,6 +111,11 @@ class SharedFun (context: Activity, packageContext: Activity, savedInstanceState
         sDbWorkerThread.postTask(task)
     }
 
+    fun deleteContact(contactId: Long?){
+        val task = Runnable { sDb?.storedDataDao()?.deleteContact(contactId) }
+        sDbWorkerThread.postTask(task)
+    }
+
     fun updateOwnerAddress(addressText: TextView) {
         val task = Runnable {
             val ownerAddress = sDb?.storedDataDao()?.getOwnerAddress()

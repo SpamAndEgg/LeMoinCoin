@@ -29,12 +29,14 @@
             android:id="@+id/txt_user_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:singleLine="true"
             android:hint="Your name"/>
 
         <EditText
             android:id="@+id/txt_user_key"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:singleLine="true"
             android:hint="Your private key"/>
 
 
