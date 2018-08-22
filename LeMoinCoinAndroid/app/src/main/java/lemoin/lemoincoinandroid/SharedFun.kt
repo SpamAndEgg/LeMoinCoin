@@ -15,13 +15,19 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem
 import kotlinx.android.synthetic.main.toolbar.*
 import kotlin.reflect.KClass
 import android.support.v4.content.ContextCompat.startActivity
+import android.support.v7.widget.LinearLayoutManager
 import android.widget.TextView
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
+import kotlinx.android.synthetic.main.activity_main.*
+import lemoin.lemoincoinandroid.R.id.recyclerView_transaction
+
 import org.json.JSONObject
 import java.text.NumberFormat
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class SharedFun (context: Activity, packageContext: Activity, savedInstanceState: Bundle?) {
@@ -111,10 +117,6 @@ class SharedFun (context: Activity, packageContext: Activity, savedInstanceState
         sDbWorkerThread.postTask(task)
     }
 
-    fun deleteContact(contactId: Long?){
-        val task = Runnable { sDb?.storedDataDao()?.deleteContact(contactId) }
-        sDbWorkerThread.postTask(task)
-    }
 
     fun updateOwnerAddress(addressText: TextView) {
         val task = Runnable {
@@ -128,6 +130,7 @@ class SharedFun (context: Activity, packageContext: Activity, savedInstanceState
         val task = Runnable {
             val ownerAddress = sDb?.storedDataDao()?.getOwnerAddress()
             updateAccBalance("0x" + ownerAddress, balanceText)
+            getTransactionList("0x" + ownerAddress)
 
         }
         sDbWorkerThread.postTask(task)
@@ -160,7 +163,7 @@ class SharedFun (context: Activity, packageContext: Activity, savedInstanceState
         val req = JsonObjectRequest(Request.Method.POST, url, reqParam,
                 Response.Listener{
                     response ->
-                    val amountCoin = response.getString("balance").toInt()
+                    val amountCoin = response.getString("balance").replace("[.,]".toRegex(),"").toDouble()
                     // Display the number with two decimals.
                     val numberToFormat = NumberFormat.getNumberInstance()
                     numberToFormat.minimumFractionDigits = 2
@@ -171,6 +174,71 @@ class SharedFun (context: Activity, packageContext: Activity, savedInstanceState
 
                 }, Response.ErrorListener {
             balanceText.hint = "Balance couldn't be fetched :("
+        })
+        // Add the request object to the queue.
+        queue.add(req)
+
+    }
+
+    class Transaction{
+        var txn_from = ""
+        var txn_to = ""
+        var amount = 0
+        var txn_to_this_add = false
+        var timestamp = 0
+        var date = ""
+    }
+
+    // Function to get a list of all transaction from and to this address.
+    private fun getTransactionList(address: String?) {
+        // Create new queue for HTTP requests.
+        val queue = Volley.newRequestQueue(context)
+        // Get the URL of the api with this address.
+        val apiUrl: String = "http://api-ropsten.etherscan.io/api?module=account&action=tokentx&sort=asc&apikey=2BEN9YZS76RB9Z4AKM384NT7J9WJGU6J22&address="
+        val url = apiUrl.plus(address)
+        // Create a JSON object containing the public key, which will be used by the server to get
+        // the balance.
+        val reqParam = JSONObject()
+        // Create the request object.
+        val req = JsonObjectRequest(Request.Method.POST, url, reqParam,
+                Response.Listener{
+                    response ->
+                    val amountCoin = response
+                    val resultJson = amountCoin.getJSONArray("result")
+
+                    var trackTransaction = mutableListOf<Transaction>()
+
+                    for (i_txn: Int in resultJson.length() downTo 1){
+                        var thisObject = JSONObject(resultJson[i_txn-1].toString())
+                        var thisTxn = Transaction()
+                        // Check if this txn has the LeMoinCoin contract, otherwise ignore it.
+                        if (thisObject.getString("tokenName").equals("LeMoin Coin")){
+                            thisTxn.amount = thisObject.getInt("value")
+                            thisTxn.txn_from = thisObject.getString("from")
+                            thisTxn.txn_to = thisObject.getString("to")
+                            thisTxn.timestamp = thisObject.getInt("timeStamp")
+
+                            var isoDate = SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss")
+                            isoDate.timeZone = TimeZone.getTimeZone("GMT+2")
+                            var date = isoDate.format(Date(thisTxn.timestamp.toLong()*1000))
+                            thisTxn.date = date
+
+                            // Check if the transaction was made to this address.
+                            thisTxn.txn_to_this_add = thisObject.getString("to") == address
+
+                            trackTransaction.add(thisTxn)
+                        }
+
+                    }
+                    // Start the recycler view of all transactions of this account.
+                    context.recyclerView_transaction.layoutManager = LinearLayoutManager(context)
+                    context.recyclerView_transaction.adapter = AdapterTransaction(trackTransaction)
+
+
+
+
+                }, Response.ErrorListener {
+
         })
         // Add the request object to the queue.
         queue.add(req)

@@ -26,9 +26,45 @@
             android:id="@+id/txt_your_balance"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Balance:"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="12dp"/>
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="10dp"
+            android:textSize="18dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingTop="20dp"
+            android:paddingBottom="18dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:layout_weight="1"
+                android:textSize="18dp"
+                android:text="Amount"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:layout_weight="1"
+                android:textSize="18dp"
+                android:text="Address"/>
+
+
+
+        </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView_transaction"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:padding="10dp">
+        </android.support.v7.widget.RecyclerView>
 
         <Button
             android:id="@+id/btn_show_balance"

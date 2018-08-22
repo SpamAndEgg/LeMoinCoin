@@ -60,6 +60,7 @@ class AddressPage : AppCompatActivity() {
                     recyclerView_address_book.layoutManager = LinearLayoutManager(this)
                     // Contact data was loaded successfully and can now be displayed.
                     recyclerView_address_book.adapter = AdapterAddressBook(contactData)
+
                 }
             }
 
