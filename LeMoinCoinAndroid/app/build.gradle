@@ -8,9 +8,9 @@ android {
     compileSdkVersion 26
     defaultConfig {
         applicationId "lemoin.lemoincoinandroid"
-        minSdkVersion 19
-        targetSdkVersion 22
-        versionCode 1
+        minSdkVersion 23
+        targetSdkVersion 26
+        versionCode 4
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
