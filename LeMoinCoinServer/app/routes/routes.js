@@ -8,8 +8,8 @@ var eth_add_from_pk = require('../../eth_add_from_pk');
 
 // Load the LeMoinCoin Contract data.
 var LeMoinCoin = LeMoinCoinContract.LeMoinCoin;
-var track_n_transaction = null;
-var time_last_transaction = 0;
+var track_n_transaction = {};
+var time_last_transaction = {};
 
 module.exports = function(app, db) {
   app.post('/notes', (req, res) => {
@@ -47,26 +47,31 @@ module.exports = function(app, db) {
 
     // Get the ethereum address (derived from the public key).
     var pub_add = eth_add_from_pk(pri_key);
+    // Check if this address was used before.
+    if (!(pub_add in track_n_transaction)) {
+        track_n_transaction[pub_add] = null;
+        time_last_transaction[pub_add] = 0;
+    }
     var n_transaction = 0;
     var this_n_transaction = web3.eth.getTransactionCount(pub_add);
     var time_now = now();
-    if (time_now - time_last_transaction > 3 * 60 * 1000) {
+    if (time_now - time_last_transaction[pub_add] > 3 * 60 * 1000) {
         // If the time between the last transaction and this one is greater 3
         // mins, use the transaction count from the chain in any case.
         n_transaction = this_n_transaction;
         console.log("More than 3 mins have past since last transaction.")
-    } else if (track_n_transaction == null) {
+    } else if (track_n_transaction[pub_add] == null) {
       n_transaction = this_n_transaction;
-    } else if (track_n_transaction >= this_n_transaction) {
+    } else if (track_n_transaction[pub_add] >= this_n_transaction) {
       // Case: Transactio number in chain the same as tracked number. This
       // means, the last transaction was not logged yet.
-      n_transaction = track_n_transaction + 1;
+      n_transaction = track_n_transaction[pub_add] + 1;
     } else {
       n_transaction = this_n_transaction;
     }
     // Update tracker variables.
-    track_n_transaction = n_transaction;
-    time_last_transaction = time_now;
+    track_n_transaction[pub_add] = n_transaction;
+    time_last_transaction[pub_add] = time_now;
 
     console.log(`Number of this transaction: ${n_transaction}`);
 

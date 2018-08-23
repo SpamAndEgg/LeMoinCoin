@@ -27,8 +27,6 @@ class AddContact : AppCompatActivity(){
 
         sDb = StoredDataBase.getInstance(this)
 
-        txt_contact_key.setText("0xECC78C99B9c0e1094dD01c03DEd83B826Aa70E22")
-
         // If one of the QR buttons is clicked, use them to set the public or private key.
 
 
@@ -40,8 +38,8 @@ class AddContact : AppCompatActivity(){
         }
 
         btn_add_contact.setOnClickListener {
-            // Check if the entered private key has the correct size of 64 characters.
-            if (txt_contact_key.length() == 42){
+            // Check if the entered address has the correct size of 42 characters.
+            if (txt_contact_key.text.matches("^xO[0-9a-fA-F]{40}".toRegex())){
                 // Save app user data to the database and go to front page of app.
                 // Create database object for the owner.
                 var userData = StoredData()

@@ -38,8 +38,6 @@ class LoginScreen : AppCompatActivity() {
         // Check if an owner is already logged in. If so, forward to MainActivity.
         checkOwnerInfo()
 
-        txt_user_key.setText("c98dd5164ee02a50b5ddb016cc1ca32fe2b5078b58329f2100711bd5aa039f4e")
-
         // If one of the QR buttons is clicked, use them to set the public or private key.
 
 
@@ -52,7 +50,7 @@ class LoginScreen : AppCompatActivity() {
 
         btn_user_data_submit.setOnClickListener {
             // Check if the entered private key has the correct size of 64 characters.
-            if (txt_user_key.length() == 64){
+            if (txt_user_key.text.matches("[0-9a-fA-F]{64}".toRegex())){
                 // Save app user data to the database and go to front page of app.
                 // Create database object for the owner.
                 var userData = StoredData()
@@ -66,7 +64,7 @@ class LoginScreen : AppCompatActivity() {
                 // Check if owner info was saved successfully, if so, forward to MainActivity.
                 checkOwnerInfo()
             } else {
-                txt_login_feedback.text = "Private key does not have the correct size."
+                txt_login_feedback.text = "Private key not valid (has to be 64 hex chars)."
             }
         }
     }
