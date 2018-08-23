@@ -60,7 +60,11 @@ class SendCoin : AppCompatActivity() {
 
         // Define action for "Send Coin" button.
         btn_send_coin.setOnClickListener{
-            transferCoin()
+            if (txt_receiver_address.text.matches("^0x[0-9a-fA-F]{40}".toRegex())){
+                transferCoin()
+            } else {
+                txt_send_to_name.text = "Invalid address format ('x0' + 40 Hex)"
+            }
         }
 
 

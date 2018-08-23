@@ -1,5 +1,5 @@
 // Import web3
-const LeMoinCoinContract = require('../../LeMoinCoinContract');
+const LeMoinCoinContract = require('../../leMoinCoinContract');
 const sign = require('ethjs-signer').sign;
 const BN = require('bignumber.js');
 const now = require('performance-now');

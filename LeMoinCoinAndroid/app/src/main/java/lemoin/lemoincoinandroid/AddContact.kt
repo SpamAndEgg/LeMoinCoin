@@ -39,7 +39,7 @@ class AddContact : AppCompatActivity(){
 
         btn_add_contact.setOnClickListener {
             // Check if the entered address has the correct size of 42 characters.
-            if (txt_contact_key.text.matches("^xO[0-9a-fA-F]{40}".toRegex())){
+            if (txt_contact_key.text.matches("^0x[0-9a-fA-F]{40}".toRegex())){
                 // Save app user data to the database and go to front page of app.
                 // Create database object for the owner.
                 var userData = StoredData()
@@ -53,7 +53,7 @@ class AddContact : AppCompatActivity(){
 
                 showContact()
             } else {
-                txt_contact_add_feedback.text = "Contact address does not have the correct size."
+                txt_contact_add_feedback.text = "Invalid address format ('x0' + 40 Hex)"
             }
         }
     }
