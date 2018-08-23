@@ -36,7 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:singleLine="true"
-            android:hint="Your private key"/>
+            android:hint="Address of contact"/>
 
 
         <Button

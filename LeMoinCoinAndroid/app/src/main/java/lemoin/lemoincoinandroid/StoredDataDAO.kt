@@ -27,6 +27,12 @@ interface StoredDataDao {
     @Query("SELECT * FROM storedData WHERE owner LIKE 'contact' ORDER BY name")
     fun getContact(): List<StoredData>
 
+    @Query("SELECT name FROM storedData WHERE publicKey IN (:arg0)")
+    fun getContactByAddressList(addressList: MutableList<String>): List<String>
+
+    @Query("SELECT name FROM storedData WHERE LOWER(publicKey) LIKE :arg0 LIMIT 1")
+    fun getContactByAddress(address:String): String
+
     @Query("DELETE FROM storedData WHERE owner LIKE 'contact'")
     fun deleteAllContact()
 

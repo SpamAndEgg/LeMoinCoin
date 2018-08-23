@@ -7,9 +7,10 @@ import android.view.ViewGroup
 import kotlinx.android.synthetic.main.transaction_row.view.*
 import java.text.NumberFormat
 
-class AdapterTransaction(transactionData:List<SharedFun.Transaction>): RecyclerView.Adapter<CustomViewHolderTxn>() {
+class AdapterTransaction(transactionData:List<SharedFun.Transaction>, trackAddressName: List<String?>): RecyclerView.Adapter<CustomViewHolderTxn>() {
 
     val transactionData = transactionData
+    val trackAddressName = trackAddressName
 
     // Number of items in the list.
     override fun getItemCount(): Int {
@@ -38,6 +39,13 @@ class AdapterTransaction(transactionData:List<SharedFun.Transaction>): RecyclerV
             holder.itemView.textView_transaction_amount.setTextColor(Color.RED)
             holder.itemView.textView_transaction_address.text = "...".plus(transactionData[position].txn_to.takeLast(15))
         }
+        // When there is an address id, display the address name instead of the address.
+        if (transactionData[position].address_id >= 0){
+            if (trackAddressName[transactionData[position].address_id] != null){
+                holder.itemView.textView_transaction_address.text = trackAddressName[transactionData[position].address_id]
+            }
+        }
+
         holder.itemView.textView_transaction_date.text = transactionData[position].date
         holder.itemView.textView_transaction_date.setTextColor(Color.GRAY)
         // Get information of the clicked object for further use in the onClickListener.

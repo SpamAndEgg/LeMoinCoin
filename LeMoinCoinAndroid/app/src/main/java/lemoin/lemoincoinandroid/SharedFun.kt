@@ -183,6 +183,7 @@ class SharedFun (context: Activity, packageContext: Activity, savedInstanceState
     class Transaction{
         var txn_from = ""
         var txn_to = ""
+        var address_id = -1
         var amount = 0
         var txn_to_this_add = false
         var timestamp = 0
@@ -199,20 +200,23 @@ class SharedFun (context: Activity, packageContext: Activity, savedInstanceState
         // Create a JSON object containing the public key, which will be used by the server to get
         // the balance.
         val reqParam = JSONObject()
+        var trackTransaction = mutableListOf<Transaction>()
+        var trackAddress = mutableListOf<String>()
+        var trackAddressName = mutableListOf<String?>()
+
         // Create the request object.
         val req = JsonObjectRequest(Request.Method.POST, url, reqParam,
-                Response.Listener{
-                    response ->
+                Response.Listener { response ->
                     val amountCoin = response
                     val resultJson = amountCoin.getJSONArray("result")
 
-                    var trackTransaction = mutableListOf<Transaction>()
 
-                    for (i_txn: Int in resultJson.length() downTo 1){
-                        var thisObject = JSONObject(resultJson[i_txn-1].toString())
+
+                    for (i_txn: Int in resultJson.length() downTo 1) {
+                        var thisObject = JSONObject(resultJson[i_txn - 1].toString())
                         var thisTxn = Transaction()
                         // Check if this txn has the LeMoinCoin contract, otherwise ignore it.
-                        if (thisObject.getString("tokenName").equals("LeMoin Coin")){
+                        if (thisObject.getString("tokenName").equals("LeMoin Coin")) {
                             thisTxn.amount = thisObject.getInt("value")
                             thisTxn.txn_from = thisObject.getString("from")
                             thisTxn.txn_to = thisObject.getString("to")
@@ -220,26 +224,62 @@ class SharedFun (context: Activity, packageContext: Activity, savedInstanceState
 
                             var isoDate = SimpleDateFormat("yyyy-MM-dd' 'HH:mm:ss")
                             isoDate.timeZone = TimeZone.getTimeZone("GMT+2")
-                            var date = isoDate.format(Date(thisTxn.timestamp.toLong()*1000))
+                            var date = isoDate.format(Date(thisTxn.timestamp.toLong() * 1000))
                             thisTxn.date = date
 
                             // Check if the transaction was made to this address.
                             thisTxn.txn_to_this_add = thisObject.getString("to") == address
-
+                            // Make a new list containing every address interacted with this account
+                            // only once. Also save the id of the address list of this transaction.
+                            // Therewith the addresses that have been interacted with are later
+                            // retrieved from the address book, if existing.
+                            if (thisTxn.txn_to_this_add) {
+                                if (!trackAddress.contains(thisTxn.txn_from)) {
+                                    // Case: Address was sending to this add and is not in list yet.
+                                    trackAddress.add(thisTxn.txn_from)
+                                }
+                                // Get the id of the address list.
+                                thisTxn.address_id = trackAddress.indexOf(thisTxn.txn_from)
+                            } else {
+                                if (!trackAddress.contains(thisTxn.txn_to)) {
+                                    // Case: This address was sending to other address, which is not in
+                                    // this list yet.
+                                    trackAddress.add(thisTxn.txn_to)
+                                }
+                                // Get the id of the address list.
+                                thisTxn.address_id = trackAddress.indexOf(thisTxn.txn_to)
+                            }
+                            println(trackAddress)
                             trackTransaction.add(thisTxn)
                         }
 
                     }
+                    println(trackAddress.size)
+                    for (i_add in 1..trackAddress.size) {
+
+
+                        var task = Runnable {
+                            val addressName = sDb?.storedDataDao()?.getContactByAddress(trackAddress[i_add-1].decapitalize())
+                            trackAddressName.add(addressName)
+                            println("ADDRESSESSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS ARE")
+
+                            println(addressName)
+                        }
+
+                        sDbWorkerThread.postTask(task)
+                    }
+
                     // Start the recycler view of all transactions of this account.
                     context.recyclerView_transaction.layoutManager = LinearLayoutManager(context)
-                    context.recyclerView_transaction.adapter = AdapterTransaction(trackTransaction)
-
-
+                    context.recyclerView_transaction.adapter = AdapterTransaction(trackTransaction, trackAddressName)
 
 
                 }, Response.ErrorListener {
 
-        })
+                })
+
+
+
         // Add the request object to the queue.
         queue.add(req)
 
