@@ -27,7 +27,12 @@ class AddContact : AppCompatActivity(){
 
         sDb = StoredDataBase.getInstance(this)
 
-        // If one of the QR buttons is clicked, use them to set the public or private key.
+        // Get address from address book (if one was sent).
+        val contactAddress = intent.getStringExtra("contactAddress")
+
+        if(contactAddress != null) {
+            txt_contact_key.setText(contactAddress)
+        }
 
 
         btn_qr_contact_key.setOnClickListener{

@@ -261,14 +261,13 @@ class SharedFun (context: Activity, packageContext: Activity, savedInstanceState
                         var task = Runnable {
                             val addressName = sDb?.storedDataDao()?.getContactByAddress(trackAddress[i_add-1].decapitalize())
                             trackAddressName.add(addressName)
-                            println("ADDRESSESSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS ARE")
 
                             println(addressName)
                         }
 
                         sDbWorkerThread.postTask(task)
                     }
-
+                    println("STATION 1111111111111111111111111111111111111111111111111111111111111")
                     // Start the recycler view of all transactions of this account.
                     context.recyclerView_transaction.layoutManager = LinearLayoutManager(context)
                     context.recyclerView_transaction.adapter = AdapterTransaction(trackTransaction, trackAddressName)
