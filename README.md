@@ -16,5 +16,5 @@ A wallet app for Le Moin Coin. It can be downloaded in the play store (https://p
 
 ### Screenshots
 
-<img src="https://lh3.googleusercontent.com/TDkXtNvLxcSDLXwGeD1iCvwHmRLcGKEr5l_YdKVpe1lr9DeC6frV_uL6A0Eef8luK68=w1920-h969-rw" width="200"> <img src="https://lh3.googleusercontent.com/GqrnHgEoFQ_Y3lb1Q215gwb9SRxfmHfSFIURhYUPxXC1YdA2AkoOVoYT2dt6_wQw1bM=w1920-h969-rw" width="200"> <img src="https://lh3.googleusercontent.com/ZUPnRjcq0KG1pi2GKFftbJfq62lzKTn6wJqxyBPb1KgOfxGn95xNEGF7A17FWtBYVQ=w1920-h969-rw" width="200">  
+<img src="https://github.com/SpamAndEgg/LeMoinCoin/blob/master/LeMoinCoinAndroid/screenshots/screenshot01.jpg" width="200"> <img src="https://github.com/SpamAndEgg/LeMoinCoin/blob/master/LeMoinCoinAndroid/screenshots/screenshot02.jpg" width="200"> <img src="https://github.com/SpamAndEgg/LeMoinCoin/blob/master/LeMoinCoinAndroid/screenshots/screenshot03.jpg" width="200">  
 
